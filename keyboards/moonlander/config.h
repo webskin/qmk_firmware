@@ -42,7 +42,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // #define MCP23_LED_G GPB6
 // #define MCP23_LED_B GPA7
 
-#define EEPROM_I2C_24LC12
+#define EEPROM_I2C_24LC128
+#    define EXTERNAL_EEPROM_I2C_BASE_ADDRESS 0b01010000
 
 /* COL2ROW or ROW2COL */
 #define DIODE_DIRECTION ROW2COL
