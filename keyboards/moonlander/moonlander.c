@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 bool mcp23018_leds[3] = {0, 0, 0};
 
-void matrix_init_kb(void) {
+void keyboard_pre_init_kb(void) {
     setPinOutput(B5);
     setPinOutput(B4);
     setPinOutput(B3);
@@ -28,11 +28,12 @@ void matrix_init_kb(void) {
     writePinLow(B4);
     writePinLow(B3);
 
-    mcp23018_leds[0] = 0;  // blue
-    mcp23018_leds[1] = 0;  // green
-    mcp23018_leds[2] = 0;  // red
+    /* the array is initialized to 0, no need to re-set it here */
+    // mcp23018_leds[0] = 0;  // blue
+    // mcp23018_leds[1] = 0;  // green
+    // mcp23018_leds[2] = 0;  // red
 
-    matrix_init_user();
+    keyboard_pre_init_user();
 }
 
 layer_state_t layer_state_set_kb(layer_state_t state) {

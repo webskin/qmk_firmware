@@ -19,13 +19,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define MCP23018_DEFAULT_ADDRESS 0b0100000
 
-#define ML_LED_1(status) (status ? writePinHigh(B5) : writePinLow(B5))
-#define ML_LED_2(status) (status ? writePinHigh(B4) : writePinLow(B4))
-#define ML_LED_3(status) (status ? writePinHigh(B3) : writePinLow(B3))
+#define ML_LED_1(status) writePin(B5, (bool)status)
+#define ML_LED_2(status) writePin(B4, (bool)status)
+#define ML_LED_3(status) writePin(B3, (bool)status)
 
-#define ML_LED_4(status) mcp23018_leds[0] = status
-#define ML_LED_5(status) mcp23018_leds[1] = status
-#define ML_LED_6(status) mcp23018_leds[2] = status
+#define ML_LED_4(status) mcp23018_leds[0] = (bool)status
+#define ML_LED_5(status) mcp23018_leds[1] = (bool)status
+#define ML_LED_6(status) mcp23018_leds[2] = (bool)status
 
 #include "quantum.h"
 
