@@ -33,7 +33,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /*
 #define MATRIX_ROW_PINS { B10, B11, B12, B13, B14, B15 } outputs
-#define MATRIX_COL_PINS { A0, A1, A2, A3, A4, A5, A6 }   inputs
+#define MATRIX_COL_PINS { A0, A1, A2, A3, A6, A7, B0 }   inputs
  */
 /* matrix state(1:on, 0:off) */
 static matrix_row_t matrix[MATRIX_ROWS];
@@ -43,6 +43,8 @@ static bool debouncing = false;
 static uint16_t debouncing_time = 0;
 static bool debouncing_right = false;
 static uint16_t debouncing_time_right = 0;
+
+#define ROWS_PER_HAND (MATRIX_ROWS / 2)
 
 extern bool mcp23018_leds[3];
 
@@ -103,24 +105,25 @@ void matrix_init(void) {
     //debug_matrix = true;
 
     // outputs
-    palSetPadMode(GPIOB, 10,  PAL_MODE_OUTPUT_PUSHPULL);
-    palSetPadMode(GPIOB, 11,  PAL_MODE_OUTPUT_PUSHPULL);
-    palSetPadMode(GPIOB, 12,  PAL_MODE_OUTPUT_PUSHPULL);
-    palSetPadMode(GPIOB, 13,  PAL_MODE_OUTPUT_PUSHPULL);
-    palSetPadMode(GPIOB, 14,  PAL_MODE_OUTPUT_PUSHPULL);
-    palSetPadMode(GPIOB, 15,  PAL_MODE_OUTPUT_PUSHPULL);
+    setPinOutput(B10);
+    setPinOutput(B11);
+    setPinOutput(B12);
+    setPinOutput(B13);
+    setPinOutput(B14);
+    setPinOutput(B15);
 
     // inputs
-    palSetPadMode(GPIOA, 0, PAL_MODE_INPUT_PULLDOWN);
-    palSetPadMode(GPIOA, 1, PAL_MODE_INPUT_PULLDOWN);
-    palSetPadMode(GPIOA, 2, PAL_MODE_INPUT_PULLDOWN);
-    palSetPadMode(GPIOA, 3, PAL_MODE_INPUT_PULLDOWN);
-    palSetPadMode(GPIOA, 6, PAL_MODE_INPUT_PULLDOWN);
-    palSetPadMode(GPIOA, 7, PAL_MODE_INPUT_PULLDOWN);
-    palSetPadMode(GPIOB, 0, PAL_MODE_INPUT_PULLDOWN);
+    setPinInputLow(A0);
+    setPinInputLow(A1);
+    setPinInputLow(A2);
+    setPinInputLow(A3);
+    setPinInputLow(A6);
+    setPinInputLow(A7);
+    setPinInputLow(B0);
 
     memset(matrix, 0, MATRIX_ROWS * sizeof(matrix_row_t));
     memset(matrix_debouncing, 0, MATRIX_ROWS * sizeof(matrix_row_t));
+    memset(matrix_debouncing_right, 0, MATRIX_COLS * sizeof(matrix_row_t));
 
     mcp23018_init();
 
@@ -131,16 +134,16 @@ uint8_t matrix_scan(void) {
 
     matrix_row_t data = 0;
     // actual matrix
-    for (int row = 0; row < 6; row++) {
+    for (int row = 0; row < ROWS_PER_HAND; row++) {
 
         // strobe row
         switch (row) {
-            case 0: palSetPad(GPIOB, 10); break;
-            case 1: palSetPad(GPIOB, 11); break;
-            case 2: palSetPad(GPIOB, 12); break;
-            case 3: palSetPad(GPIOB, 13); break;
-            case 4: palSetPad(GPIOB, 14); break;
-            case 5: palSetPad(GPIOB, 15); break;
+            case 0: writePinHigh(B10); break;
+            case 1: writePinHigh(B11); break;
+            case 2: writePinHigh(B12); break;
+            case 3: writePinHigh(B13); break;
+            case 4: writePinHigh(B14); break;
+            case 5: writePinHigh(B15); break;
         }
 
         // need wait to settle pin state
@@ -148,23 +151,23 @@ uint8_t matrix_scan(void) {
 
         // read col data
         data = (
-            (palReadPad(GPIOA, 0) << 0 ) |
-            (palReadPad(GPIOA, 1) << 1 ) |
-            (palReadPad(GPIOA, 2) << 2 ) |
-            (palReadPad(GPIOA, 3) << 3 ) |
-            (palReadPad(GPIOA, 6) << 4 ) |
-            (palReadPad(GPIOA, 7) << 5 ) |
-            (palReadPad(GPIOB, 0) << 6 )
+            (readPin(A0) << 0 ) |
+            (readPin(A1) << 1 ) |
+            (readPin(A2) << 2 ) |
+            (readPin(A3) << 3 ) |
+            (readPin(A6) << 4 ) |
+            (readPin(A7) << 5 ) |
+            (readPin(B0) << 6 )
         );
 
         // unstrobe  row
         switch (row) {
-            case 0: palClearPad(GPIOB, 10); break;
-            case 1: palClearPad(GPIOB, 11); break;
-            case 2: palClearPad(GPIOB, 12); break;
-            case 3: palClearPad(GPIOB, 13); break;
-            case 4: palClearPad(GPIOB, 14); break;
-            case 5: palClearPad(GPIOB, 15); break;
+            case 0: writePinLow(B10); break;
+            case 1: writePinLow(B11); break;
+            case 2: writePinLow(B12); break;
+            case 3: writePinLow(B13); break;
+            case 4: writePinLow(B14); break;
+            case 5: writePinLow(B15); break;
         }
 
         if (matrix_debouncing[row] != data) {
@@ -175,7 +178,7 @@ uint8_t matrix_scan(void) {
     }
 
 
-    for (int row = 0; row < 7; row++) {
+    for (int row = 0; row <= ROWS_PER_HAND; row++) {
         // right side
 
         if (!mcp23018_initd) {
@@ -217,14 +220,14 @@ uint8_t matrix_scan(void) {
 
 
     if (debouncing && timer_elapsed(debouncing_time) > DEBOUNCE) {
-        for (int row = 0; row < 6; row++) {
+        for (int row = 0; row < ROWS_PER_HAND; row++) {
             matrix[row] = matrix_debouncing[row];
         }
         debouncing = false;
     }
 
     if (debouncing_right && timer_elapsed(debouncing_time_right) > DEBOUNCE) {
-        for (int row = 0; row < 6; row++) {
+        for (int row = 0; row < ROWS_PER_HAND; row++) {
             matrix[11 - row] = 0;
             for (int col = 0; col < MATRIX_COLS; col++) {
                 matrix[11 - row] |= ((matrix_debouncing_right[6 - col] & (1 << row) ? 1 : 0) << col);
