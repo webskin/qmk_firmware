@@ -20,64 +20,60 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 bool mcp23018_leds[3] = {0, 0, 0};
 
 void matrix_init_kb(void) {
-  setPinOutput(B5);
-  setPinOutput(B4);
-  setPinOutput(B3);
+    setPinOutput(B5);
+    setPinOutput(B4);
+    setPinOutput(B3);
 
-  writePinLow(B5);
-  writePinLow(B4);
-  writePinLow(B3);
+    writePinLow(B5);
+    writePinLow(B4);
+    writePinLow(B3);
 
-  mcp23018_leds[0] = 0; // blue
-  mcp23018_leds[1] = 0; // green
-  mcp23018_leds[2] = 0; // red
+    mcp23018_leds[0] = 0;  // blue
+    mcp23018_leds[1] = 0;  // green
+    mcp23018_leds[2] = 0;  // red
 
-  eeconfig_init();
+    matrix_init_user();
 }
 
-void matrix_scan_kb(void) {
+layer_state_t layer_state_set_kb(layer_state_t state) {
+    ML_LED_1(0);
+    ML_LED_2(0);
+    ML_LED_3(0);
+    ML_LED_4(0);
+    ML_LED_5(0);
+    ML_LED_6(0);
 
-}
-
-uint32_t layer_state_set_kb(uint32_t state) {
-  ML_LED_1(0);
-  ML_LED_2(0);
-  ML_LED_3(0);
-  ML_LED_4(0);
-  ML_LED_5(0);
-  ML_LED_6(0);
-
-  uint8_t layer = biton32(state);
-  switch (layer) {
-      case 0:
-        break;
-      case 1:
-        ML_LED_1(1);
-        ML_LED_4(1);
-        break;
-      case 2:
-        ML_LED_2(1);
-        ML_LED_5(1);
-        break;
-      case 3:
-        ML_LED_3(1);
-        break;
-      case 4:
-        ML_LED_4(1);
-        break;
-      case 5:
-        ML_LED_5(1);
-        break;
-      case 6:
-        ML_LED_6(1);
-        break;
-      default:
-        break;
+    state = layer_state_set_user(state);
+    uint8_t layer = get_highest_layer(state);
+    switch (layer) {
+        case 1:
+            ML_LED_1(1);
+            ML_LED_4(1);
+            break;
+        case 2:
+            ML_LED_2(1);
+            ML_LED_5(1);
+            break;
+        case 3:
+            ML_LED_3(1);
+            break;
+        case 4:
+            ML_LED_4(1);
+            break;
+        case 5:
+            ML_LED_5(1);
+            break;
+        case 6:
+            ML_LED_6(1);
+            break;
+        default:
+            break;
     }
 
-  return state;
-}
+    return state;
+    }
 
+// clang-format off
 const is31_led g_is31_leds[DRIVER_LED_TOTAL] = {
 /* Refer to IS31 manual for these locations
  *   driver
@@ -213,3 +209,4 @@ led_config_t g_led_config = { {
     1, 4, 4, 4, 4, 4,
     4, 4, 1, 1, 1, 1
 } };
+// clang-format on
