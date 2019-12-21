@@ -131,10 +131,11 @@ void matrix_init(void) {
 }
 
 uint8_t matrix_scan(void) {
+    bool changed = false;
 
     matrix_row_t data = 0;
     // actual matrix
-    for (int row = 0; row < ROWS_PER_HAND; row++) {
+    for (uint8_t row = 0; row < ROWS_PER_HAND; row++) {
 
         // strobe row
         switch (row) {
@@ -174,11 +175,12 @@ uint8_t matrix_scan(void) {
             matrix_debouncing[row] = data;
             debouncing = true;
             debouncing_time = timer_read();
+            changed = true;
         }
     }
 
 
-    for (int row = 0; row <= ROWS_PER_HAND; row++) {
+    for (uint8_t row = 0; row <= ROWS_PER_HAND; row++) {
         // right side
 
         if (!mcp23018_initd) {
@@ -215,6 +217,7 @@ uint8_t matrix_scan(void) {
             matrix_debouncing_right[row] = data;
             debouncing_right = true;
             debouncing_time_right = timer_read();
+            changed = true;
         }
     }
 
@@ -238,7 +241,7 @@ uint8_t matrix_scan(void) {
 
     matrix_scan_quantum();
 
-    return 1;
+    return (uint8_t)changed;
 }
 
 bool matrix_is_on(uint8_t row, uint8_t col) {
