@@ -80,7 +80,7 @@ void mcp23018_init(void) {
     mcp23018_tx[2] = 0b00111111; // B is inputs
 
     if (MSG_OK != i2c_transmit(MCP23018_DEFAULT_ADDRESS << 1,
-        mcp23018_tx, 3, 100
+        mcp23018_tx, 3, I2C_TIMEOUT
     )) {
         printf("error hori\n");
     } else {
@@ -89,7 +89,7 @@ void mcp23018_init(void) {
         mcp23018_tx[2] = 0b11111111; // B is pulled-up
 
         if (MSG_OK != i2c_transmit(MCP23018_DEFAULT_ADDRESS << 1,
-            mcp23018_tx, 3, 100
+            mcp23018_tx, 3, I2C_TIMEOUT
         )) {
             printf("error hori\n");
         } else {
@@ -193,7 +193,7 @@ uint8_t matrix_scan(void) {
         mcp23018_tx[2] = ((uint8_t)!mcp23018_leds[1] << 6) | ((uint8_t)!mcp23018_leds[0] << 7); // activate row
 
         if (MSG_OK != i2c_transmit(MCP23018_DEFAULT_ADDRESS << 1,
-            mcp23018_tx, 3, 100
+            mcp23018_tx, 3, I2C_TIMEOUT
         )) {
             printf("error hori\n");
         }
@@ -201,11 +201,7 @@ uint8_t matrix_scan(void) {
         // read col
 
         mcp23018_tx[0] = 0x13; // GPIOB
-
-        if (MSG_OK != i2c_transmit_receive(MCP23018_DEFAULT_ADDRESS << 1,
-            mcp23018_tx, 1,
-            mcp23018_rx, 1
-        )) {
+        if (MSG_OK !=  i2c_readReg(MCP23018_DEFAULT_ADDRESS << 1, mcp23018_tx[0], &mcp23018_rx[0], 1, I2C_TIMEOUT)) {
             printf("error vert\n");
         }
 
@@ -220,14 +216,14 @@ uint8_t matrix_scan(void) {
     }
 
 
-    if (debouncing && timer_elapsed(debouncing_time) > DEBOUNCING_DELAY) {
+    if (debouncing && timer_elapsed(debouncing_time) > DEBOUNCE) {
         for (int row = 0; row < 6; row++) {
             matrix[row] = matrix_debouncing[row];
         }
         debouncing = false;
     }
 
-    if (debouncing_right && timer_elapsed(debouncing_time_right) > DEBOUNCING_DELAY) {
+    if (debouncing_right && timer_elapsed(debouncing_time_right) > DEBOUNCE) {
         for (int row = 0; row < 6; row++) {
             matrix[11 - row] = 0;
             for (int col = 0; col < MATRIX_COLS; col++) {
