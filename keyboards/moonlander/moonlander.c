@@ -230,6 +230,7 @@ bool music_mask_kb(uint16_t keycode) {
 
 #ifdef SWAP_HANDS_ENABLE
 // swap-hands action needs a matrix to define the swap
+// clang-format off
 const keypos_t hand_swap_config[MATRIX_ROWS][MATRIX_COLS] = {
     /* Left hand, matrix positions */
     {{6,6}, {5,6}, {4,6}, {3,6}, {2,6}, {1,6},{0,6}},
@@ -246,8 +247,11 @@ const keypos_t hand_swap_config[MATRIX_ROWS][MATRIX_COLS] = {
     {{6,4}, {5,4}, {4,4}, {3,4}, {2,4}, {1,4},{0,4}},
     {{6,5}, {5,5}, {4,5}, {3,5}, {2,5}, {1,5},{0,5}},
 };
+// clang-format on
 #endif
 
+#if defined(AUDIO_ENABLE) && defined(MUSIC_MAP)
+// clang-format off
 const uint8_t music_map[MATRIX_ROWS][MATRIX_COLS] = LAYOUT_moonlander(
     58, 59, 60, 61, 62, 63, 64,    65, 66, 67, 68, 69, 70, 71,
     44, 45, 46, 47, 48, 49, 50,    51, 52, 53, 54, 55, 56, 57,
@@ -256,3 +260,5 @@ const uint8_t music_map[MATRIX_ROWS][MATRIX_COLS] = LAYOUT_moonlander(
      8,  9, 10, 11, 12,      3,     4,     13, 14, 15, 16, 17,
                      0,  1,  2,     5,  6,  7
 );
+// clang-format on
+#endif
