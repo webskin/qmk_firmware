@@ -44,7 +44,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define EEPROM_I2C_24LC128
 #define EXTERNAL_EEPROM_I2C_BASE_ADDRESS 0b10100000
-
+#define DEBUG_EEPROM_OUTPUT
 /* COL2ROW or ROW2COL */
 #define DIODE_DIRECTION ROW2COL
 
