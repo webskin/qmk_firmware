@@ -29,6 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "quantum.h"
 
+// clang-format off
 #define LAYOUT_moonlander( \
     k00, k01, k02, k03, k04, k05, k06,   k60, k61, k62, k63, k64, k65, k66, \
     k10, k11, k12, k13, k14, k15, k16,   k70, k71, k72, k73, k74, k75, k76, \
@@ -52,3 +53,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     { KC_NO, KC_NO, ka2, ka3, ka4, ka5, ka6 }, \
     { KC_NO, KC_NO, KC_NO, kb3, kb4, kb5, kb6  } \
 }
+// clang-format on

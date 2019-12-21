@@ -20,12 +20,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "config_common.h"
 
 /* USB Device descriptor parameter */
+// clang-format off
 #define VENDOR_ID       0xFEED
 #define PRODUCT_ID      0x6060
 #define MANUFACTURER    ZSA
 #define PRODUCT         Moonlander
 #define DESCRIPTION     A keyboard
 #define DEVICE_VER      0x0001
+// clang-format on
 
 /* key matrix size */
 #define MATRIX_ROWS 12
@@ -56,7 +58,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /* Locking resynchronize hack */
 #define LOCKING_RESYNC_ENABLE
 
-
 /*
  * Feature disable options
  *  These options are also useful to firmware size reduction.
@@ -84,7 +85,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define DRIVER_1_LED_TOTAL 36
 #define DRIVER_2_LED_TOTAL 36
 #define DRIVER_LED_TOTAL (DRIVER_1_LED_TOTAL + DRIVER_2_LED_TOTAL)
-#define RGB_MATRIX_CENTER { 125, 26 }
+#define RGB_MATRIX_CENTER \
+    { 125, 26 }
 #define RGB_MATRIX_FRAMEBUFFER_EFFECTS
 #define RGB_MATRIX_KEYPRESSES
 #define RGB_DISABLE_WHEN_USB_SUSPENDED true
@@ -94,12 +96,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define IGNORE_MOD_TAP_INTERRUPT
 
-#define TAPPING_TOGGLE  1
+#define TAPPING_TOGGLE 1
 
-#define MOUSEKEY_INTERVAL       20
-#define MOUSEKEY_DELAY          0
-#define MOUSEKEY_TIME_TO_MAX    60
-#define MOUSEKEY_MAX_SPEED      7
+#define MOUSEKEY_INTERVAL 20
+#define MOUSEKEY_DELAY 0
+#define MOUSEKEY_TIME_TO_MAX 60
+#define MOUSEKEY_MAX_SPEED 7
 #define MOUSEKEY_WHEEL_DELAY 0
 
 #define MUSIC_MAP

@@ -15,7 +15,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
@@ -39,60 +38,46 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 static matrix_row_t matrix[MATRIX_ROWS];
 static matrix_row_t matrix_debouncing[MATRIX_ROWS];
 static matrix_row_t matrix_debouncing_right[MATRIX_COLS];
-static bool debouncing = false;
-static uint16_t debouncing_time = 0;
-static bool debouncing_right = false;
-static uint16_t debouncing_time_right = 0;
+static bool         debouncing            = false;
+static uint16_t     debouncing_time       = 0;
+static bool         debouncing_right      = false;
+static uint16_t     debouncing_time_right = 0;
 
 #define ROWS_PER_HAND (MATRIX_ROWS / 2)
 
 extern bool mcp23018_leds[3];
 
-__attribute__ ((weak))
-void matrix_init_user(void) {}
+__attribute__((weak)) void matrix_init_user(void) {}
 
-__attribute__ ((weak))
-void matrix_scan_user(void) {}
+__attribute__((weak)) void matrix_scan_user(void) {}
 
-__attribute__ ((weak))
-void matrix_init_kb(void) {
-  matrix_init_user();
-}
+__attribute__((weak)) void matrix_init_kb(void) { matrix_init_user(); }
 
-__attribute__ ((weak))
-void matrix_scan_kb(void) {
-  matrix_scan_user();
-}
+__attribute__((weak)) void matrix_scan_kb(void) { matrix_scan_user(); }
 
-bool mcp23018_initd = false;
+bool    mcp23018_initd = false;
 uint8_t mcp23018_tx[3];
 uint8_t mcp23018_rx[1];
 
 void mcp23018_init(void) {
-
     i2c_init();
     i2c_start(MCP23018_DEFAULT_ADDRESS << 1);
 
+    // #define MCP23_ROW_PINS { GPB5, GBP4, GBP3, GBP2, GBP1, GBP0 }       outputs
+    // #define MCP23_COL_PINS { GPA0, GBA1, GBA2, GBA3, GBA4, GBA5, GBA6 } inputs
 
-// #define MCP23_ROW_PINS { GPB5, GBP4, GBP3, GBP2, GBP1, GBP0 }       outputs
-// #define MCP23_COL_PINS { GPA0, GBA1, GBA2, GBA3, GBA4, GBA5, GBA6 } inputs
+    mcp23018_tx[0] = 0x00;        // IODIRA
+    mcp23018_tx[1] = 0b00000000;  // A is output
+    mcp23018_tx[2] = 0b00111111;  // B is inputs
 
-    mcp23018_tx[0] = 0x00; // IODIRA
-    mcp23018_tx[1] = 0b00000000; // A is output
-    mcp23018_tx[2] = 0b00111111; // B is inputs
-
-    if (MSG_OK != i2c_transmit(MCP23018_DEFAULT_ADDRESS << 1,
-        mcp23018_tx, 3, I2C_TIMEOUT
-    )) {
+    if (MSG_OK != i2c_transmit(MCP23018_DEFAULT_ADDRESS << 1, mcp23018_tx, 3, I2C_TIMEOUT)) {
         printf("error hori\n");
     } else {
-        mcp23018_tx[0] = 0x0C; // GPPUA
-        mcp23018_tx[1] = 0b10000000; // A is not pulled-up
-        mcp23018_tx[2] = 0b11111111; // B is pulled-up
+        mcp23018_tx[0] = 0x0C;        // GPPUA
+        mcp23018_tx[1] = 0b10000000;  // A is not pulled-up
+        mcp23018_tx[2] = 0b11111111;  // B is pulled-up
 
-        if (MSG_OK != i2c_transmit(MCP23018_DEFAULT_ADDRESS << 1,
-            mcp23018_tx, 3, I2C_TIMEOUT
-        )) {
+        if (MSG_OK != i2c_transmit(MCP23018_DEFAULT_ADDRESS << 1, mcp23018_tx, 3, I2C_TIMEOUT)) {
             printf("error hori\n");
         } else {
             mcp23018_initd = true;
@@ -102,7 +87,7 @@ void mcp23018_init(void) {
 
 void matrix_init(void) {
     printf("matrix init\n");
-    //debug_matrix = true;
+    // debug_matrix = true;
 
     // outputs
     setPinOutput(B10);
@@ -136,7 +121,6 @@ uint8_t matrix_scan(void) {
     matrix_row_t data = 0;
     // actual matrix
     for (uint8_t row = 0; row < ROWS_PER_HAND; row++) {
-
         // strobe row
         switch (row) {
             case 0: writePinHigh(B10); break;
@@ -173,12 +157,11 @@ uint8_t matrix_scan(void) {
 
         if (matrix_debouncing[row] != data) {
             matrix_debouncing[row] = data;
-            debouncing = true;
-            debouncing_time = timer_read();
-            changed = true;
+            debouncing             = true;
+            debouncing_time        = timer_read();
+            changed                = true;
         }
     }
-
 
     for (uint8_t row = 0; row <= ROWS_PER_HAND; row++) {
         // right side
@@ -193,20 +176,18 @@ uint8_t matrix_scan(void) {
 
         // select row
 
-        mcp23018_tx[0] = 0x12; // GPIOA
-        mcp23018_tx[1] = (0b01111111 & ~(1<<(row))) | ((uint8_t)!mcp23018_leds[2] << 7); // activate row
-        mcp23018_tx[2] = ((uint8_t)!mcp23018_leds[1] << 6) | ((uint8_t)!mcp23018_leds[0] << 7); // activate row
+        mcp23018_tx[0] = 0x12;                                                                   // GPIOA
+        mcp23018_tx[1] = (0b01111111 & ~(1 << (row))) | ((uint8_t)!mcp23018_leds[2] << 7);       // activate row
+        mcp23018_tx[2] = ((uint8_t)!mcp23018_leds[1] << 6) | ((uint8_t)!mcp23018_leds[0] << 7);  // activate row
 
-        if (MSG_OK != i2c_transmit(MCP23018_DEFAULT_ADDRESS << 1,
-            mcp23018_tx, 3, I2C_TIMEOUT
-        )) {
+        if (MSG_OK != i2c_transmit(MCP23018_DEFAULT_ADDRESS << 1, mcp23018_tx, 3, I2C_TIMEOUT)) {
             printf("error hori\n");
         }
 
         // read col
 
-        mcp23018_tx[0] = 0x13; // GPIOB
-        if (MSG_OK !=  i2c_readReg(MCP23018_DEFAULT_ADDRESS << 1, mcp23018_tx[0], &mcp23018_rx[0], 1, I2C_TIMEOUT)) {
+        mcp23018_tx[0] = 0x13;  // GPIOB
+        if (MSG_OK != i2c_readReg(MCP23018_DEFAULT_ADDRESS << 1, mcp23018_tx[0], &mcp23018_rx[0], 1, I2C_TIMEOUT)) {
             printf("error vert\n");
         }
 
@@ -215,12 +196,11 @@ uint8_t matrix_scan(void) {
 
         if (matrix_debouncing_right[row] != data) {
             matrix_debouncing_right[row] = data;
-            debouncing_right = true;
-            debouncing_time_right = timer_read();
-            changed = true;
+            debouncing_right             = true;
+            debouncing_time_right        = timer_read();
+            changed                      = true;
         }
     }
-
 
     if (debouncing && timer_elapsed(debouncing_time) > DEBOUNCE) {
         for (int row = 0; row < ROWS_PER_HAND; row++) {
@@ -244,13 +224,9 @@ uint8_t matrix_scan(void) {
     return (uint8_t)changed;
 }
 
-bool matrix_is_on(uint8_t row, uint8_t col) {
-    return (matrix[row] & (1<<col));
-}
+bool matrix_is_on(uint8_t row, uint8_t col) { return (matrix[row] & (1 << col)); }
 
-matrix_row_t matrix_get_row(uint8_t row) {
-    return matrix[row];
-}
+matrix_row_t matrix_get_row(uint8_t row) { return matrix[row]; }
 
 void matrix_print(void) {
     printf("\nr/c 01234567\n");
@@ -258,7 +234,7 @@ void matrix_print(void) {
         printf("%X0: ", row);
         matrix_row_t data = matrix_get_row(row);
         for (int col = 0; col < MATRIX_COLS; col++) {
-            if (data & (1<<col))
+            if (data & (1 << col))
                 printf("1");
             else
                 printf("0");

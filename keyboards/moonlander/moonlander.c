@@ -44,7 +44,7 @@ layer_state_t layer_state_set_kb(layer_state_t state) {
     ML_LED_5(0);
     ML_LED_6(0);
 
-    state = layer_state_set_user(state);
+    state         = layer_state_set_user(state);
     uint8_t layer = get_highest_layer(state);
     switch (layer) {
         case 1:
@@ -72,7 +72,7 @@ layer_state_t layer_state_set_kb(layer_state_t state) {
     }
 
     return state;
-    }
+}
 
 // clang-format off
 const is31_led g_is31_leds[DRIVER_LED_TOTAL] = {
@@ -215,15 +215,15 @@ led_config_t g_led_config = { {
 #ifdef AUDIO_ENABLE
 bool music_mask_kb(uint16_t keycode) {
     switch (keycode) {
-    case QK_LAYER_TAP ... QK_ONE_SHOT_LAYER_MAX:
-    case QK_LAYER_TAP_TOGGLE ... QK_LAYER_MOD_MAX:
-    case QK_MOD_TAP ... QK_MOD_TAP_MAX:
-    case AU_ON ... MUV_DE:
-    case RESET:
-    case EEP_RST:
-        return false;
-    default:
-        return music_mask_user(keycode);
+        case QK_LAYER_TAP ... QK_ONE_SHOT_LAYER_MAX:
+        case QK_LAYER_TAP_TOGGLE ... QK_LAYER_MOD_MAX:
+        case QK_MOD_TAP ... QK_MOD_TAP_MAX:
+        case AU_ON ... MUV_DE:
+        case RESET:
+        case EEP_RST:
+            return false;
+        default:
+            return music_mask_user(keycode);
     }
 }
 #endif
