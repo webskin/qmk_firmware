@@ -14,6 +14,7 @@ COMMAND_ENABLE = yes    # Commands for debug and configuration
 NKRO_ENABLE = yes	    # USB Nkey Rollover
 CUSTOM_MATRIX = yes # Custom matrix file
 AUDIO_ENABLE = yes
+SWAP_HANDS_ENABLE = yes
 RGB_MATRIX_ENABLE = IS31FL3731
 # SERIAL_LINK_ENABLE = yes
 # EEPROM_DRIVER = i2c

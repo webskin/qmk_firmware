@@ -85,3 +85,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define DRIVER_2_LED_TOTAL 36
 #define DRIVER_LED_TOTAL (DRIVER_1_LED_TOTAL + DRIVER_2_LED_TOTAL)
 #define RGB_MATRIX_CENTER { 125, 26 }
+
+#define MUSIC_MAP
