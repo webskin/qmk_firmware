@@ -89,8 +89,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define RGB_MATRIX_KEYPRESSES
 #define RGB_DISABLE_WHEN_USB_SUSPENDED true
 
-#define RGB_MATRIX_LED_PROCESS_LIMIT 5
-#define RGB_MATRIX_LED_FLUSH_LIMIT 26
+// #define RGB_MATRIX_LED_PROCESS_LIMIT 5
+// #define RGB_MATRIX_LED_FLUSH_LIMIT 26
 
 #define IGNORE_MOD_TAP_INTERRUPT
 
