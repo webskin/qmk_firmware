@@ -87,6 +87,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define DRIVER_LED_TOTAL (DRIVER_1_LED_TOTAL + DRIVER_2_LED_TOTAL)
 #define RGB_MATRIX_CENTER \
     { 125, 26 }
+#define RGB_MATRIX_MAXIMUM_BRIGHTNESS 175 // limits maximum brightness of LEDs to 200 out of 255. If not defined maximum brightness is set to 255
 #define RGB_MATRIX_FRAMEBUFFER_EFFECTS
 #define RGB_MATRIX_KEYPRESSES
 #define RGB_DISABLE_WHEN_USB_SUSPENDED true
