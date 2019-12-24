@@ -21,8 +21,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* USB Device descriptor parameter */
 // clang-format off
-#define VENDOR_ID       0xFEED
-#define PRODUCT_ID      0x6060
+#define VENDOR_ID       0x3297
+#define PRODUCT_ID      0x1969
 #define MANUFACTURER    ZSA
 #define PRODUCT         Moonlander
 #define DESCRIPTION     A keyboard
