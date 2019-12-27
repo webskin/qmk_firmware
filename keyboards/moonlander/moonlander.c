@@ -214,7 +214,6 @@ led_config_t g_led_config = { {
 // clang-format on
 
 void suspend_power_down_kb(void) {
-    rgb_matrix_set_color_all(0, 0, 0);
     rgb_matrix_set_suspend_state(true);
     suspend_power_down_user();
 }

@@ -17,7 +17,7 @@ AUDIO_ENABLE = yes
 SWAP_HANDS_ENABLE = yes
 RGB_MATRIX_ENABLE = IS31FL3731
 #SERIAL_LINK_ENABLE = yes
-#EEPROM_DRIVER      = i2c
+EEPROM_DRIVER      = i2c
 
 #project specific files
 SRC = matrix.c
