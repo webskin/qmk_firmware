@@ -56,6 +56,8 @@ __attribute__((weak)) void matrix_init_kb(void) { matrix_init_user(); }
 __attribute__((weak)) void matrix_scan_kb(void) { matrix_scan_user(); }
 
 bool    mcp23018_initd = false;
+static uint8_t mcp23018_reset_loop;
+
 uint8_t mcp23018_tx[3];
 uint8_t mcp23018_rx[1];
 
@@ -167,8 +169,18 @@ uint8_t matrix_scan(void) {
         // right side
 
         if (!mcp23018_initd) {
-            printf("trying to init right\n");
-            mcp23018_init();
+            if (++mcp23018_reset_loop == 0) {
+                // if (++mcp23018_reset_loop >= 1300) {
+                // since mcp23018_reset_loop is 8 bit - we'll try to reset once in 255 matrix scans
+                // this will be approx bit more frequent than once per second
+                print("trying to reset mcp23018\n");
+                mcp23018_init();
+                if (!mcp23018_initd) {
+                    print("left side not responding\n");
+                } else {
+                    print("left side attached\n");
+                }
+            }
         }
 
         // #define MCP23_ROW_PINS { GPB5, GBP4, GBP3, GBP2, GBP1, GBP0 }       outputs
@@ -182,6 +194,7 @@ uint8_t matrix_scan(void) {
 
         if (MSG_OK != i2c_transmit(MCP23018_DEFAULT_ADDRESS << 1, mcp23018_tx, 3, I2C_TIMEOUT)) {
             printf("error hori\n");
+            mcp23018_initd = false;
         }
 
         // read col
@@ -189,6 +202,7 @@ uint8_t matrix_scan(void) {
         mcp23018_tx[0] = 0x13;  // GPIOB
         if (MSG_OK != i2c_readReg(MCP23018_DEFAULT_ADDRESS << 1, mcp23018_tx[0], &mcp23018_rx[0], 1, I2C_TIMEOUT)) {
             printf("error vert\n");
+            mcp23018_initd = false;
         }
 
         data = ~(mcp23018_rx[0] & 0b00111111);
@@ -209,7 +223,7 @@ uint8_t matrix_scan(void) {
         debouncing = false;
     }
 
-    if (debouncing_right && timer_elapsed(debouncing_time_right) > DEBOUNCE) {
+    if (debouncing_right && timer_elapsed(debouncing_time_right) > DEBOUNCE && mcp23018_initd) {
         for (int row = 0; row < ROWS_PER_HAND; row++) {
             matrix[11 - row] = 0;
             for (int col = 0; col < MATRIX_COLS; col++) {
