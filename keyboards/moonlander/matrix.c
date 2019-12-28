@@ -55,7 +55,7 @@ __attribute__((weak)) void matrix_init_kb(void) { matrix_init_user(); }
 
 __attribute__((weak)) void matrix_scan_kb(void) { matrix_scan_user(); }
 
-bool    mcp23018_initd = false;
+bool           mcp23018_initd = false;
 static uint8_t mcp23018_reset_loop;
 
 uint8_t mcp23018_tx[3];
@@ -179,6 +179,9 @@ uint8_t matrix_scan(void) {
                     print("left side not responding\n");
                 } else {
                     print("left side attached\n");
+#ifdef RGB_MATRIX_ENABLE
+                    rgb_matrix_init();
+#endif
                 }
             }
         }
