@@ -18,6 +18,54 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "moonlander.h"
 
 bool mcp23018_leds[3] = {0, 0, 0};
+bool is_launching = false;
+
+void moonlander_led_task(void) {
+    if (is_launching) {
+        ML_LED_1(false);
+        ML_LED_2(false);
+        ML_LED_3(false);
+        ML_LED_4(false);
+        ML_LED_5(false);
+        ML_LED_6(false);
+
+        ML_LED_1(true);
+        wait_ms(250);
+        ML_LED_2(true);
+        wait_ms(250);
+        ML_LED_3(true);
+        wait_ms(250);
+        ML_LED_4(true);
+        wait_ms(250);
+        ML_LED_5(true);
+        wait_ms(250);
+        ML_LED_6(true);
+        wait_ms(250);
+        ML_LED_1(false);
+        wait_ms(250);
+        ML_LED_2(false);
+        wait_ms(250);
+        ML_LED_3(false);
+        wait_ms(250);
+        ML_LED_4(false);
+        wait_ms(250);
+        ML_LED_5(false);
+        wait_ms(250);
+        ML_LED_6(false);
+        wait_ms(250);
+        is_launching = false;
+    }
+}
+
+static THD_WORKING_AREA(waLEDThread, 128);
+static THD_FUNCTION(LEDThread, arg) {
+    (void)arg;
+    chRegSetThreadName("LEDThread");
+    while (true) {
+        moonlander_led_task();
+    }
+}
+
 
 void keyboard_pre_init_kb(void) {
     setPinOutput(B5);
@@ -27,6 +75,9 @@ void keyboard_pre_init_kb(void) {
     writePinLow(B5);
     writePinLow(B4);
     writePinLow(B3);
+
+
+    chThdCreateStatic(waLEDThread, sizeof(waLEDThread), NORMALPRIO-16, LEDThread, NULL);
 
     /* the array is initialized to 0, no need to re-set it here */
     // mcp23018_leds[0] = 0;  // blue

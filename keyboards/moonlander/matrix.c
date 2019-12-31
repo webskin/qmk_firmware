@@ -46,6 +46,7 @@ static uint16_t     debouncing_time_right = 0;
 #define ROWS_PER_HAND (MATRIX_ROWS / 2)
 
 extern bool mcp23018_leds[3];
+extern bool is_launching;
 
 __attribute__((weak)) void matrix_init_user(void) {}
 
@@ -82,7 +83,7 @@ void mcp23018_init(void) {
         if (MSG_OK != i2c_transmit(MCP23018_DEFAULT_ADDRESS << 1, mcp23018_tx, 3, I2C_TIMEOUT)) {
             printf("error hori\n");
         } else {
-            mcp23018_initd = true;
+            mcp23018_initd = is_launching = true;
         }
     }
 }
