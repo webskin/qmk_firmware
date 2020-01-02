@@ -16,6 +16,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "moonlander.h"
+#ifdef WEBUSB_ENABLE
+#include "webusb.h"
+#endif
+
+keyboard_config_t keyboard_config;
 
 bool mcp23018_leds[3] = {0, 0, 0};
 bool is_launching = false;
@@ -56,6 +61,49 @@ void moonlander_led_task(void) {
         is_launching = false;
         layer_state_set_kb(layer_state);
     }
+#ifdef WEBUSB_ENABLE
+    if (webusb_state.pairing == true) {
+        static uint8_t led_mask;
+
+        ML_LED_1(false);
+        ML_LED_2(false);
+        ML_LED_3(false);
+        ML_LED_4(false);
+        ML_LED_5(false);
+        ML_LED_6(false);
+
+        if (!led_mask) {
+            led_mask = 1;
+        } else {
+            led_mask++;
+            if (led_mask > 10) led_mask = 1;
+        }
+        switch (led_mask) {
+            case 1:
+                ML_LED_1(true);
+                break;
+            case 2:
+            case 10:
+                break;
+            case 3:
+            case 9:
+                ML_LED_3(true);
+                break;
+            case 4:
+            case 8:
+                ML_LED_4(true);
+                break;
+            case 5:
+            case 7:
+                ML_LED_5(rue);
+                break;
+            case 6:
+                ML_LED_6(true);
+                break;
+        }
+        wait_ms(150);
+    }
+#endif
 }
 
 static THD_WORKING_AREA(waLEDThread, 128);
@@ -328,3 +376,49 @@ const uint8_t music_map[MATRIX_ROWS][MATRIX_COLS] = LAYOUT_moonlander(
 );
 // clang-format on
 #endif
+
+
+bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
+#ifdef WEBUSB_ENABLE
+    if(webusb_state.paired == true) {
+        uint8_t event[5];
+        event[0] = WEBUSB_STATUS_OK;
+        event[1] = record->event.pressed ? WEBUSB_EVT_KEYDOWN : WEBUSB_EVT_KEYUP;
+        event[2] = record->event.key.col;
+        event[3] = record->event.key.row;
+        event[4] = WEBUSB_STOP_BIT;
+        webusb_send(event, sizeof(event));
+    }
+#endif
+    switch (keycode) {
+#ifdef RGB_MATRIX_ENABLE
+        case TOGGLE_LAYER_COLOR:
+            if (record->event.pressed) {
+                keyboard_config.disable_layer_led ^= 1;
+              if (keyboard_config.disable_layer_led)
+                    rgb_matrix_set_color_all(0, 0, 0);
+                eeconfig_update_kb(keyboard_config.raw);
+            }
+            break;
+        case RGB_TOG:
+            if (record->event.pressed) {
+              switch (rgb_matrix_get_flags()) {
+                case LED_FLAG_ALL: {
+                    rgb_matrix_set_flags(LED_FLAG_NONE);
+                    keyboard_config.rgb_matrix_enable = false;
+                    rgb_matrix_set_color_all(0, 0, 0);
+                  }
+                  break;
+                default: {
+                    rgb_matrix_set_flags(LED_FLAG_ALL);
+                    keyboard_config.rgb_matrix_enable = true;
+                  }
+                  break;
+              }
+              eeconfig_update_kb(keyboard_config.raw);
+            }
+            return false;
+#endif
+    }
+    return process_record_user(keycode, record);
+}

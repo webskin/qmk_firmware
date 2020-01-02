@@ -54,3 +54,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     { KC_NO, KC_NO, KC_NO, kb3, kb4, kb5, kb6  } \
 }
 // clang-format on
+
+enum planck_ez_keycodes {
+    TOGGLE_LAYER_COLOR = SAFE_RANGE,
+    ML_SAFE_RANGE,
+};
+
+typedef union {
+  uint32_t raw;
+  struct {
+    bool         disable_layer_led   :1;
+    bool         rgb_matrix_enable   :1;
+  };
+} keyboard_config_t;
+
+extern keyboard_config_t keyboard_config;

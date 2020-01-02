@@ -27,6 +27,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define PRODUCT         Moonlander
 #define DESCRIPTION     A keyboard
 #define DEVICE_VER      0x0001
+#define WEBUSB_LANDING_PAGE_URL u8"configure.ergodox-ez.com"
+
 // clang-format on
 
 /* key matrix size */
@@ -46,7 +48,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define EEPROM_I2C_24LC128
 
-// Not needed, is default address: 
+// Not needed, is default address:
 // #define EXTERNAL_EEPROM_I2C_BASE_ADDRESS 0b10100000
 
 /* COL2ROW or ROW2COL */
@@ -79,6 +81,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #    define NO_ACTION_MACRO
 #    define NO_ACTION_FUNCTION
 #endif
+
+#define I2C1_CLOCK_SPEED 400000
 
 #define DRIVER_ADDR_1 0b1110100
 #define DRIVER_ADDR_2 0b1110111
