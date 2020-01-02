@@ -54,6 +54,7 @@ void moonlander_led_task(void) {
         ML_LED_6(false);
         wait_ms(250);
         is_launching = false;
+        layer_state_set_kb(layer_state);
     }
 }
 
@@ -88,6 +89,9 @@ void keyboard_pre_init_kb(void) {
 }
 
 layer_state_t layer_state_set_kb(layer_state_t state) {
+    state         = layer_state_set_user(state);
+    if (is_launching) return state;
+
     ML_LED_1(0);
     ML_LED_2(0);
     ML_LED_3(0);
@@ -95,7 +99,6 @@ layer_state_t layer_state_set_kb(layer_state_t state) {
     ML_LED_5(0);
     ML_LED_6(0);
 
-    state         = layer_state_set_user(state);
     uint8_t layer = get_highest_layer(state);
     switch (layer) {
         case 1:
