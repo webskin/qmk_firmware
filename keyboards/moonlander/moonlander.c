@@ -84,6 +84,7 @@ void moonlander_led_task(void) {
                 break;
             case 2:
             case 10:
+                ML_LED_2(true);
                 break;
             case 3:
             case 9:
@@ -95,7 +96,7 @@ void moonlander_led_task(void) {
                 break;
             case 5:
             case 7:
-                ML_LED_5(rue);
+                ML_LED_5(true);
                 break;
             case 6:
                 ML_LED_6(true);
