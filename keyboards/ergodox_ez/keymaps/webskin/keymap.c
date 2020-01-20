@@ -39,7 +39,49 @@ enum custom_keycodes {
   RGB_SLD = EZ_SAFE_RANGE,
 };
 
-//Tap Dance Declarations
+// Combos definitions
+enum combos {
+  // V + ^ -> ESCAPE
+  V_DCRC__ESC,
+  // C + ' -> Ctrl + Z
+  C_APOS__LCTL_Z,
+  // , + K -> Ctrl + Shift + Z
+  COMM_K__LSFT_LCTL_Z
+};
+const uint16_t PROGMEM v_dcrc_combo[] = {BP_V, BP_DCRC, COMBO_END};
+const uint16_t PROGMEM c_apos_combo[] = {BP_C, BP_APOS, COMBO_END};
+const uint16_t PROGMEM comm_k_combo[] = {BP_COMM, BP_K, COMBO_END};
+combo_t key_combos[COMBO_COUNT] = {
+  [V_DCRC__ESC] = COMBO(v_dcrc_combo, KC_ESC),
+  [C_APOS__LCTL_Z] = COMBO_ACTION(c_apos_combo),
+  [COMM_K__LSFT_LCTL_Z] = COMBO_ACTION(comm_k_combo),
+};
+
+void process_combo_event(uint8_t combo_index, bool pressed) {
+  switch(combo_index) {
+    case C_APOS__LCTL_Z:
+      if (pressed) {
+        register_code(KC_LCTL);
+        register_code(BP_Z);
+        unregister_code(BP_Z);
+        unregister_code(KC_LCTL);
+      }
+      break;
+
+    case COMM_K__LSFT_LCTL_Z:
+      if (pressed) {
+        register_code(KC_LCTL);
+	    register_code(KC_LSFT);
+        register_code(BP_Z);
+        unregister_code(BP_Z);
+		unregister_code(KC_LSFT);
+        unregister_code(KC_LCTL);
+      }
+      break;
+  }
+}
+
+// Tap Dance Declarations
 enum {
   TD_COPY_CUT = 0,
   TD_LBRC_RBRC = 1,
@@ -49,7 +91,7 @@ enum {
   TD_LGIL_RGIL = 5,
 };
 
-//Tap Dance Definitions
+// Tap Dance Definitions
 qk_tap_dance_action_t tap_dance_actions[] = {
   [TD_COPY_CUT]  = ACTION_TAP_DANCE_DOUBLE(KC_BP_COPY, KC_BP_CUT),
   [TD_LBRC_RBRC] = ACTION_TAP_DANCE_DOUBLE(BP_LBRC, BP_RBRC),
@@ -61,31 +103,31 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [BEPO] = LAYOUT_ergodox_pretty(
-    KC_TRANSPARENT, BP_DQOT,        BP_LGIL,        BP_RGIL,        BP_LPRN,        BP_RPRN,        TG(3),                                          KC_TRANSPARENT, BP_AT,          BP_PLUS,        BP_MINS,        BP_SLSH,        BP_ASTR,        BP_W,
+    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, BP_W,           BP_Z,           KC_TRANSPARENT, KC_TRANSPARENT,
     BP_DLR,         BP_B,           BP_ECUT,        BP_P,           BP_O,           BP_EGRV,        KC_TRANSPARENT,                                 KC_TRANSPARENT, BP_DCRC,        BP_V,           BP_D,           BP_L,           BP_J,           BP_Z,
-    KC_TAB,         LSFT_T(BP_A),   LCTL_T(BP_U),   LALT_T(BP_I),   LT(2,BP_E),     BP_COMM,                                                                        BP_C,           LT(1,BP_T),     LALT_T(BP_S),   RCTL_T(BP_R),   LSFT_T(BP_N),   BP_M,
+    KC_TAB,         LSFT_T(BP_A),   LCTL_T(BP_U),   LALT_T(BP_I),   LT(MISCR,BP_E),     BP_COMM,                                                                        BP_C,           LT(MISCL,BP_T), LALT_T(BP_S),   RCTL_T(BP_R),   LSFT_T(BP_N),   BP_M,
     KC_TRANSPARENT, BP_AGRV,        BP_Y,           BP_X,           BP_DOT,         BP_K,           KC_TRANSPARENT,                                 KC_TRANSPARENT, BP_APOS,        BP_Q,           BP_G,           BP_H,           BP_F,           BP_CCED,
     KC_TRANSPARENT, KC_LGUI,        KC_TRANSPARENT, KC_TRANSPARENT, KC_SPACE,                                                                                                       KC_SPACE,       KC_RALT,        KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
                                                                                                     LALT_T(KC_APPLICATION),WEBUSB_PAIR,    KC_CALCULATOR,  KC_ESCAPE,
                                                                                                                     KC_TRANSPARENT, KC_TRANSPARENT,
-                                                                                    OSM(MOD_LSFT),  KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, TG(4),          KC_ENTER
+                                                                                    OSM(MOD_LSFT),  LT(MISCL, KC_NO), KC_TRANSPARENT, KC_TRANSPARENT, LT(MISCR, KC_NO),          KC_ENTER
   ),
   [MISCL] = LAYOUT_ergodox_pretty(
-    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,        TD(TD_LBRC_RBRC),        KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
-    KC_TRANSPARENT, BP_MINS,        BP_PLUS,        KC_TRANSPARENT,        TD(TD_LCBR_RCBR),        BP_GRV,         KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
-    KC_TRANSPARENT, BP_ASTR,        BP_SLSH,        KC_TRANSPARENT,        TD(TD_LPRN_RPRN),        BP_EQL,                                                                         KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
-    KC_TRANSPARENT, KC_MEDIA_PLAY_PAUSE,BP_DQOT,        KC_TRANSPARENT,        TD(TD_LESS_GRTR),        BP_PERC,        KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
-    KC_TRANSPARENT, KC_MEDIA_PREV_TRACK,KC_MEDIA_NEXT_TRACK,KC_TRANSPARENT,        TD(TD_LGIL_RGIL),                                                                                                        KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
+    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,        TD(TD_LBRC_RBRC),        KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
+    KC_TRANSPARENT, BP_HASH, BP_PLUS,        BP_MINS,        TD(TD_LCBR_RCBR),        BP_GRV,         KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
+    LSFT(KC_TAB), BP_SLSH,        BP_ASTR,        BP_EQL,                TD(TD_LPRN_RPRN),        BP_SCLN, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
+    KC_MEDIA_PLAY_PAUSE, BP_BSLS,BP_AT,        BP_DQOT,        TD(TD_LESS_GRTR),        BP_TILD,        KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
+    KC_MEDIA_PREV_TRACK,KC_MEDIA_NEXT_TRACK,BP_DEGR,BP_PERC,        TD(TD_LGIL_RGIL),                                                                                                        KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
                                                                                                     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
                                                                                                                     KC_TRANSPARENT, KC_TRANSPARENT,
                                                                                     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT
   ),
   [MISCR] = LAYOUT_ergodox_pretty(
-    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_INSERT,      KC_F6,          KC_F7,          KC_F8,          KC_F9,          KC_F10,         KC_F11,
-    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_AUDIO_VOL_UP,KC_DELETE,      KC_HOME,        KC_UP,          KC_END,         KC_PSCREEN,     KC_F12,
+    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_INSERT,      LCTL(KC_DELETE),LCTL(LSFT(KC_HOME)),LCTL(LSFT(KC_UP)),LCTL(LSFT(KC_END)),KC_TRANSPARENT, KC_TRANSPARENT,
+    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_AUDIO_VOL_UP,KC_DELETE,      KC_HOME,        KC_UP,          KC_END,         KC_PSCREEN,     KC_TRANSPARENT,
     KC_TRANSPARENT, KC_LSHIFT,      KC_LCTRL,       KC_LALT,        KC_TRANSPARENT, KC_TRANSPARENT,                                                                 KC_BSPACE,      KC_LEFT,        KC_DOWN,        KC_RIGHT,       LALT(KC_PSCREEN),KC_TRANSPARENT,
-    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_AUDIO_VOL_DOWN,KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
-    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, TD(TD_COPY_CUT),                                  KC_BP_PASTE,     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
+    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_AUDIO_VOL_DOWN,LCTL(KC_BSPACE),LCTL(LSFT(KC_LEFT)),LCTL(LSFT(KC_DOWN)),LSFT(KC_RIGHT), KC_TRANSPARENT, KC_TRANSPARENT,
+    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, TD(TD_COPY_CUT),                                  KC_BP_PASTE,     LSFT(KC_INSERT), KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
                                                                                                     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
                                                                                                                     KC_TRANSPARENT, KC_TRANSPARENT,
                                                                                     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_AUDIO_MUTE

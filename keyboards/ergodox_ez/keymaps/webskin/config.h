@@ -5,4 +5,6 @@
 #define ORYX_CONFIGURATOR
 #undef TAPPING_TERM
 #define TAPPING_TERM 300
-#define FIRMWARE_VERSION u8"plbRv/JwZOZ"
+#define COMBO_COUNT 3
+#define COMBO_TERM 80
+#define FIRMWARE_VERSION u8"plbRv/N4vE0"
