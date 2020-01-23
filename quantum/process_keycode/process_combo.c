@@ -59,8 +59,10 @@ static inline void dump_key_buffer(bool emit) {
             const action_t action = store_or_get_action(key_buffer[i].event.pressed, key_buffer[i].event.key);
             process_action(&(key_buffer[i]), action);
 #else
-            register_code16(key_buffer[i]);
-            send_keyboard_report();
+            if (key_buffer[i] != KC_M) {
+                register_code16(key_buffer[i]);
+                send_keyboard_report();
+            } // c'est process_tap_dance qui se charge d'émettre le q (KC_M)
 #endif
         }
     }
@@ -118,7 +120,12 @@ static bool process_single_combo(combo_t *combo, uint16_t keycode, keyrecord_t *
 
 #define NO_COMBO_KEYS_ARE_DOWN (0 == combo->state)
 
-bool process_combo(uint16_t keycode, keyrecord_t *record) {
+bool process_combo(uint16_t pKeycode, keyrecord_t *record) {
+    uint16_t keycode = pKeycode;
+    if (pKeycode == 22279) {
+        keycode = KC_M; // BP_Q
+    }
+
     bool is_combo_key          = false;
     drop_buffer                = false;
     bool no_combo_keys_pressed = true;
