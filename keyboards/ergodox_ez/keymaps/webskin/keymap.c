@@ -170,11 +170,11 @@ uint16_t get_tapping_term(uint16_t keycode) {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [BEPO] = LAYOUT_ergodox_pretty(
-    _______, _______,     _______,     _______, _______,             _______,         _______,                                _______, _______,        _______,        _______, _______,     _______,      _______,
-    BP_DLR,  BP_B,        BP_ECUT,     BP_P,    BP_O,                TD(TD_EGRV_ESC), _______,                                _______, BP_DCRC,        TD(TD_V_W),     BP_D,    BP_L,        BP_J,         _______,
-    KC_TAB,  CTL_T(BP_A), SFT_T(BP_U), BP_I,    LT(MISCR,BP_E),      BP_COMM,                                                             BP_C,        LT(MISCL,BP_T), BP_S,    SFT_T(BP_R), RCTL_T(BP_N), BP_M,
-    _______, BP_AGRV,     BP_Y,        BP_X,    BP_DOT,              BP_K,            _______,                                _______, BP_APOS,        TD(CT_Q_Z),     BP_G,    BP_H,        BP_F,         BP_CCED,
-    _______, KC_LGUI,     _______,     _______, LT(NUMPAD,KC_SPACE),                                                                                   KC_SPACE,       KC_RALT, _______,     _______,      _______,
+    _______, _______,     _______,     _______, _______,             _______,         _______,                                _______, _______, _______,        _______, _______,     _______,      _______,
+    BP_DLR,  BP_B,        BP_ECUT,     BP_P,    BP_O,                TD(TD_EGRV_ESC), _______,                                _______, BP_DCRC, TD(TD_V_W),     BP_D,    BP_L,        BP_J,         _______,
+    KC_TAB,  CTL_T(BP_A), SFT_T(BP_U), BP_I,    LT(MISCR,BP_E),      BP_COMM,                                                             BP_C, LT(MISCL,BP_T), BP_S,    SFT_T(BP_R), RCTL_T(BP_N), BP_M,
+    _______, BP_AGRV,     BP_Y,        BP_X,    BP_DOT,              BP_K,            _______,                                _______, BP_APOS, TD(CT_Q_Z),     BP_G,    BP_H,        BP_F,         BP_CCED,
+    _______, KC_LGUI,     _______,     _______, LT(NUMPAD,KC_SPACE),                                                                            KC_SPACE,       KC_RALT, _______,     _______,      _______,
                                                                             A(KC_APPLICATION), _______,        KC_CALCULATOR, _______,
                                                                                                _______,        _______,
                                                      OSM(MOD_LSFT), LT(MISCL, KC_NO), LT(MOUSE, KC_NO),        _______, LT(MISCR, KC_NO), KC_ENTER
@@ -190,11 +190,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                   _______, _______, _______,        _______, _______, _______
   ),
   [MISCR] = LAYOUT_ergodox_pretty(
-    _______, _______, _______, _______, _______,         _______, _______,                        KC_INSERT,         C(KC_DELETE),    S(KC_HOME),          S(KC_UP),        S(KC_END),            _______,          _______,
-    _______, _______, _______, _______, _______,         _______, _______,                        KC_AUDIO_VOL_UP,   KC_DELETE,       KC_HOME,             KC_UP,           KC_END,               KC_PSCREEN,       _______,
-    _______, _______, _______, _______, _______,         _______,                                                    KC_BSPACE,       KC_LEFT,             KC_DOWN,         KC_RIGHT,             A(KC_PSCREEN),    _______,
-    _______, _______, _______, _______, _______,         _______, _______,                        KC_AUDIO_VOL_DOWN, C(KC_BSPACE),    C(S(KC_LEFT)),       S(KC_DOWN),      C(S(KC_RIGHT)),       _______,          _______,
-    _______, _______, _______, _______, TD(TD_COPY_CUT),                                                                              KC_BP_PASTE,         S(KC_INSERT),    _______,              _______,          _______,
+    _______, _______, _______, _______, _______,         _______, _______,                        KC_INSERT,         C(KC_DELETE),    S(KC_HOME),    S(KC_UP),     S(KC_END),      _______,       _______,
+    _______, _______, _______, _______, _______,         _______, _______,                        KC_AUDIO_VOL_UP,   KC_DELETE,       KC_HOME,       KC_UP,        KC_END,         KC_PSCREEN,    _______,
+    _______, _______, _______, _______, _______,         _______,                                                    KC_BSPACE,       KC_LEFT,       KC_DOWN,      KC_RIGHT,       A(KC_PSCREEN), _______,
+    _______, _______, _______, _______, _______,         _______, _______,                        KC_AUDIO_VOL_DOWN, C(KC_BSPACE),    C(S(KC_LEFT)), S(KC_DOWN),   C(S(KC_RIGHT)), _______,       _______,
+    _______, _______, _______, _______, TD(TD_COPY_CUT),                                                                              KC_BP_PASTE,   S(KC_INSERT), _______,        _______,       _______,
                                                                   _______, _______,      _______, _______,
                                                                            _______,      _______,
                                                          _______, _______, _______,      _______, _______, KC_AUDIO_MUTE
