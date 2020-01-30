@@ -155,14 +155,14 @@ void process_combo_event(uint8_t combo_index, bool pressed) {
 
 uint16_t get_tapping_term(uint16_t keycode) {
   switch (keycode) {
-    case CTL_T(BP_A):
-    case RCTL_T(BP_N):
-    case SFT_T(BP_U):
-    case SFT_T(BP_R):
-      return 350;
+    case CTL_T(BP_B):
+    case RCTL_T(BP_J):
+    case SFT_T(BP_ECUT):
+    case SFT_T(BP_L):
+      return 300;
     case LT(MISCR,BP_E):
     case LT(MISCL,BP_T):
-      return 180;
+      return 200;
     default:
       return TAPPING_TERM;
   }
@@ -170,14 +170,14 @@ uint16_t get_tapping_term(uint16_t keycode) {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [BEPO] = LAYOUT_ergodox_pretty(
-    _______, _______,     _______,     _______, _______,             _______,         _______,                                _______, _______, _______,        _______, _______,     _______,      _______,
-    BP_DLR,  BP_B,        BP_ECUT,     BP_P,    BP_O,                TD(TD_EGRV_ESC), _______,                                _______, BP_DCRC, TD(TD_V_W),     BP_D,    BP_L,        BP_J,         _______,
-    KC_TAB,  CTL_T(BP_A), SFT_T(BP_U), BP_I,    LT(MISCR,BP_E),      BP_COMM,                                                             BP_C, LT(MISCL,BP_T), BP_S,    SFT_T(BP_R), RCTL_T(BP_N), BP_M,
-    _______, BP_AGRV,     BP_Y,        BP_X,    BP_DOT,              BP_K,            _______,                                _______, BP_APOS, TD(CT_Q_Z),     BP_G,    BP_H,        BP_F,         BP_CCED,
-    _______, KC_LGUI,     _______,     _______, LT(NUMPAD,KC_SPACE),                                                                            KC_SPACE,       KC_RALT, _______,     _______,      _______,
-                                                                            A(KC_APPLICATION), _______,        KC_CALCULATOR, _______,
-                                                                                               _______,        _______,
-                                                     OSM(MOD_LSFT), LT(MISCL, KC_NO), LT(MOUSE, KC_NO),        _______, LT(MISCR, KC_NO), KC_ENTER
+    _______, _______,     _______,        _______, _______,             _______,         _______,                                _______, _______, _______,        _______, _______,     _______,      _______,
+    BP_DLR,  CTL_T(BP_B), SFT_T(BP_ECUT), BP_P,    BP_O,                TD(TD_EGRV_ESC), _______,                                _______, BP_DCRC, TD(TD_V_W),     BP_D,    SFT_T(BP_L), RCTL_T(BP_J), _______,
+    KC_TAB,  BP_A,        BP_U,           BP_I,    LT(MISCR,BP_E),      BP_COMM,                                                             BP_C, LT(MISCL,BP_T), BP_S,    BP_R,        BP_N,         BP_M,
+    _______, BP_AGRV,     BP_Y,           BP_X,    BP_DOT,              BP_K,            _______,                                _______, BP_APOS, TD(CT_Q_Z),     BP_G,    BP_H,        BP_F,         BP_CCED,
+    _______, KC_LGUI,     _______,        _______, LT(NUMPAD,KC_SPACE),                                                                            KC_SPACE,       KC_RALT, _______,     _______,      _______,
+                                                                               A(KC_APPLICATION), _______,        KC_CALCULATOR, _______,
+                                                                                                  _______,        _______,
+                                                        OSM(MOD_LSFT), LT(MISCL, KC_NO), LT(MOUSE, KC_NO),        _______, LT(MISCR, KC_NO), KC_ENTER
   ),
   [MISCL] = LAYOUT_ergodox_pretty(
     _______,             _______,             _______, _______, TD(TD_LBRC_RBRC), _______, _______,                          _______, _______, _______, _______, _______, _______, _______,
@@ -228,6 +228,70 @@ bool suspended = false;
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
+    case BP_A:
+      if (record->event.pressed && biton32(layer_state) == MISCR) {
+        SEND_STRING("ea");
+        return false;
+      } else {
+        break;
+      }
+    case BP_U:
+      if (record->event.pressed && biton32(layer_state) == MISCR) {
+        SEND_STRING("eu");
+        return false;
+      } else {
+        break;
+      }
+    case BP_I:
+      if (record->event.pressed && biton32(layer_state) == MISCR) {
+        SEND_STRING("ei");
+        return false;
+      } else {
+        break;
+      }
+    case BP_COMM:
+      if (record->event.pressed && biton32(layer_state) == MISCR) {
+        SEND_STRING("e,");
+        return false;
+      } else {
+        break;
+      }
+
+    case BP_C:
+      if (record->event.pressed && biton32(layer_state) == MISCL) {
+        SEND_STRING("tc");
+        return false;
+      } else {
+        break;
+      }
+    case BP_S:
+      if (record->event.pressed && biton32(layer_state) == MISCL) {
+        SEND_STRING("ts");
+        return false;
+      } else {
+        break;
+      }
+    case BP_R:
+      if (record->event.pressed && biton32(layer_state) == MISCL) {
+        SEND_STRING("tr");
+        return false;
+      } else {
+        break;
+      }
+    case BP_N:
+      if (record->event.pressed && biton32(layer_state) == MISCL) {
+        SEND_STRING("tn");
+        return false;
+      } else {
+        break;
+      }
+    case BP_M:
+      if (record->event.pressed && biton32(layer_state) == MISCL) {
+        SEND_STRING("tm");
+        return false;
+      } else {
+        break;
+      }
     case RGB_SLD:
       if (record->event.pressed) {
         rgblight_mode(1);
