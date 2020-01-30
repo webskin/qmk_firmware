@@ -22,11 +22,14 @@
 #define NO_PIPE_ALT KC_GRAVE
 #define NO_BSLS_ALT KC_EQUAL
 
-#define BEPO 0    // Default bépo layer
-#define MISCL 1   // Misc right (parentheses, math operators, double quotes, french quotes, back tick, percent, audio play previous next)
-#define MISCR 2   // Misc left
-#define NUMPAD 3  // Numpad
-#define MOUSE 4   // Mouse
+enum {
+  BEPO,
+  MISCL,
+  MISCR,
+  NUMPAD,
+  MOUSE,
+  MODS
+};
 
 enum custom_keycodes {
   RGB_SLD = EZ_SAFE_RANGE,
@@ -177,7 +180,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     _______, KC_LGUI,     _______,        _______, LT(NUMPAD,KC_SPACE),                                                                            KC_SPACE,       KC_RALT, _______,     _______,      _______,
                                                                                A(KC_APPLICATION), _______,        KC_CALCULATOR, _______,
                                                                                                   _______,        _______,
-                                                        OSM(MOD_LSFT), LT(MISCL, KC_NO), LT(MOUSE, KC_NO),        _______, LT(MISCR, KC_NO), KC_ENTER
+                                                                OSM(MOD_LSFT), MO(MODS), LT(MOUSE, KC_NO),        _______, LM(MODS, MOD_LALT), KC_ENTER
   ),
   [MISCL] = LAYOUT_ergodox_pretty(
     _______,             _______,             _______, _______, TD(TD_LBRC_RBRC), _______, _______,                          _______, _______, _______, _______, _______, _______, _______,
@@ -219,6 +222,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                    _______,        _______,
                                                  _______, _______, _______,        _______, _______, _______
   ),
+  [MODS] = LAYOUT_ergodox_pretty(
+    _______, _______, _______, _______, _______,                       _______,   _______,                          _______, _______, _______,                       _______, _______, _______, _______,
+    _______, _______, _______, _______, LM(BEPO, MOD_LCTL | MOD_LSFT), _______,   _______,                          _______, _______, LM(BEPO, MOD_LCTL | MOD_LSFT), _______, _______, _______, _______,
+    _______, _______, _______, _______, LM(BEPO, MOD_LCTL),            KC_TAB,                                               _______, LM(BEPO, MOD_LCTL),            _______, _______, _______, _______,
+    _______, _______, _______, _______, _______,                       S(KC_TAB), _______,                          _______, _______, _______,                       _______, _______, _______, _______,
+    _______, _______, _______, _______, _______,                                                                             _______, _______,                       _______, _______, _______,
+                                                                                  _______, _______,        _______, _______,
+                                                                                           _______,        _______,
+                                                                         _______, _______, _______,        _______, _______, _______
+  ),
 };
 
 rgblight_config_t rgblight_config;
@@ -228,6 +241,7 @@ bool suspended = false;
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
+    // Protection de la ligne de repos si on est sur MISCR
     case BP_A:
       if (record->event.pressed && biton32(layer_state) == MISCR) {
         SEND_STRING("ea");
@@ -257,6 +271,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         break;
       }
 
+    // Protection de la ligne de repos si on est sur MISCL
     case BP_C:
       if (record->event.pressed && biton32(layer_state) == MISCL) {
         SEND_STRING("tc");
@@ -314,20 +329,20 @@ uint32_t layer_state_set_user(uint32_t state) {
     ergodox_right_led_2_off();
     ergodox_right_led_3_off();
     switch (layer) {
-      case 1:
+      case MISCL:
         ergodox_right_led_1_on();
         break;
-      case 2:
+      case MISCR:
         ergodox_right_led_2_on();
         break;
-      case 3:
+      case NUMPAD:
         ergodox_right_led_3_on();
         break;
-      case 4:
+      case MOUSE:
         ergodox_right_led_1_on();
         ergodox_right_led_2_on();
         break;
-      case 5:
+      case MODS:
         ergodox_right_led_1_on();
         ergodox_right_led_3_on();
         break;
@@ -344,35 +359,7 @@ uint32_t layer_state_set_user(uint32_t state) {
         break;
     }
     switch (layer) {
-      case 0:
-        if(!disable_layer_color) {
-          rgblight_enable_noeeprom();
-          rgblight_mode_noeeprom(1);
-          rgblight_sethsv_noeeprom(0,0,0);
-        }
-        break;
-      case 1:
-        if(!disable_layer_color) {
-          rgblight_enable_noeeprom();
-          rgblight_mode_noeeprom(1);
-          rgblight_sethsv_noeeprom(0,0,0);
-        }
-        break;
-      case 2:
-        if(!disable_layer_color) {
-          rgblight_enable_noeeprom();
-          rgblight_mode_noeeprom(1);
-          rgblight_sethsv_noeeprom(0,0,0);
-        }
-        break;
-      case 3:
-        if(!disable_layer_color) {
-          rgblight_enable_noeeprom();
-          rgblight_mode_noeeprom(1);
-          rgblight_sethsv_noeeprom(0,0,0);
-        }
-        break;
-      case 4:
+      case BEPO ... MODS:
         if(!disable_layer_color) {
           rgblight_enable_noeeprom();
           rgblight_mode_noeeprom(1);
