@@ -25,10 +25,10 @@
 enum {
   BEPO,
   MISCL,
-  MISCR,
+  MISCR1,
+  MISCR2,
   NUMPAD,
   MOUSE,
-  MODS
 };
 
 enum custom_keycodes {
@@ -115,25 +115,13 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 
 // Combos definitions
 enum combos {
-  // F + H -> CCED
-  F_H__CCED,
   // G + Q -> Underscore
-  G_Q__UNDERSCORE,
-  // C + ' -> Ctrl + Z
-  C_APOS__LCTL_Z,
-  // , + K -> Ctrl + Shift + Z
-  COMM_K__LSFT_LCTL_Z,
+  G_Q__UNDERSCORE
 };
 
-const uint16_t PROGMEM f_h_combo[] = {BP_F, BP_H, COMBO_END};
 const uint16_t PROGMEM g_q_combo[] = {BP_G, BP_Q, COMBO_END};
-const uint16_t PROGMEM c_apos_combo[] = {BP_C, BP_APOS, COMBO_END};
-const uint16_t PROGMEM comm_k_combo[] = {BP_COMM, BP_K, COMBO_END};
 combo_t key_combos[COMBO_COUNT] = {
-  [F_H__CCED] = COMBO(f_h_combo, BP_CCED),
   [G_Q__UNDERSCORE] = COMBO_ACTION(g_q_combo),
-  [C_APOS__LCTL_Z] = COMBO_ACTION(c_apos_combo),
-  [COMM_K__LSFT_LCTL_Z] = COMBO_ACTION(comm_k_combo),
 };
 void process_combo_event(uint8_t combo_index, bool pressed) {
   switch(combo_index) {
@@ -148,29 +136,25 @@ void process_combo_event(uint8_t combo_index, bool pressed) {
         q_g__underscore_combo_occured = true;
       }
       break;
-
-    case C_APOS__LCTL_Z:
-      if (pressed) {
-        tap_code16(C(BP_Z));
-      }
-      break;
-
-    case COMM_K__LSFT_LCTL_Z:
-      if (pressed) {
-        tap_code16(C(S(BP_Z)));
-      }
-      break;
   }
 }
 
 uint16_t get_tapping_term(uint16_t keycode) {
   switch (keycode) {
-    case CTL_T(BP_B):
-    case RCTL_T(BP_J):
-    case SFT_T(BP_ECUT):
-    case SFT_T(BP_L):
-      return 300;
-    case LT(MISCR,BP_E):
+    case CTL_T(BP_AGRV):
+    case RCTL_T(BP_F):
+    case CTL_T(KC_NO):
+    case RCTL_T(KC_NO):
+    case SFT_T(BP_P):
+    case SFT_T(BP_D):
+    case SFT_T(KC_F3):
+    case SFT_T(KC_F8):
+    case ALT_T(BP_K):
+    case ALT_T(BP_APOS):
+    case ALT_T(KC_NO):
+      return 300;  
+    case LT(MISCR1,BP_E):
+    case LT(MISCR2,BP_COMM):
     case LT(MISCL,BP_T):
       return 200;
     default:
@@ -180,14 +164,14 @@ uint16_t get_tapping_term(uint16_t keycode) {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [BEPO] = LAYOUT_ergodox_pretty(
-    _______, _______,     _______,        _______, _______,             _______,         _______,                                _______, _______, _______,        BP_MINS, _______,     _______,      _______,
-    BP_DLR,  CTL_T(BP_B), SFT_T(BP_ECUT), BP_P,    BP_O,                TD(TD_EGRV_ESC), _______,                                _______, BP_DCRC, TD(TD_V_W),     BP_D,    SFT_T(BP_L), RCTL_T(BP_J), _______,
-    KC_TAB,  BP_A,        BP_U,           BP_I,    LT(MISCR,BP_E),      BP_COMM,                                                             BP_C, LT(MISCL,BP_T), BP_S,    BP_R,        BP_N,         BP_M,
-    _______, BP_AGRV,     BP_Y,           BP_X,    BP_DOT,              BP_K,            _______,                                _______, BP_APOS, TD(CT_Q_Z),     BP_G,    BP_H,        BP_F,         _______,
-    _______, KC_LGUI,     _______,        _______, LT(NUMPAD,KC_SPACE),                                                                            KC_SPACE,       KC_RALT, _______,     _______,      _______,
+    _______, _______,        _______, _______,     _______,             _______,            _______,                                _______, _______,        _______,        BP_MINS,     _______, _______,      _______,
+    BP_DLR,  BP_B,           BP_ECUT, SFT_T(BP_P), BP_O,                TD(TD_EGRV_ESC),    _______,                                _______, BP_DCRC,        TD(TD_V_W),     SFT_T(BP_D), BP_L,    BP_J,         _______,
+    KC_TAB,  BP_A,           BP_U,    BP_I,        LT(MISCR1,BP_E),     LT(MISCR2,BP_COMM),                                                  BP_C,           LT(MISCL,BP_T), BP_S,        BP_R,    BP_N,         BP_M,
+    _______, CTL_T(BP_AGRV), BP_Y,    BP_X,        BP_DOT,              ALT_T(BP_K),        _______,                                _______, ALT_T(BP_APOS), TD(CT_Q_Z),     BP_G,        BP_H,    RCTL_T(BP_F), BP_CCED,
+    _______, KC_LGUI,     _______,    _______,     LT(NUMPAD,KC_SPACE),                                                                                      KC_SPACE,       KC_RALT,     _______, _______,      _______,
                                                                                A(KC_APPLICATION), _______,        KC_CALCULATOR, _______,
                                                                                                   _______,        _______,
-                                                                       OSM(MOD_LSFT), MO(MODS), MO(MOUSE),        _______, LM(MODS, MOD_LALT), KC_ENTER
+                                                                        OSM(MOD_LSFT), _______, MO(MOUSE),        _______, _______, KC_ENTER
   ),
   [MISCL] = LAYOUT_ergodox_pretty(
     _______,             _______,             TILD_ARROW, FAT_ARROW,  TD(TD_LBRC_RBRC), _______, _______,                          _______, _______, _______, _______, _______, _______, _______,
@@ -199,22 +183,32 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                                     _______,        _______,
                                                                                   _______, _______, _______,        _______, _______, _______
   ),
-  [MISCR] = LAYOUT_ergodox_pretty(
-    _______, _______, _______, _______, _______,         _______, _______,                        KC_INSERT,         C(KC_DELETE),    S(KC_HOME),    S(KC_UP),     S(KC_END),      _______,       _______,
+  [MISCR1] = LAYOUT_ergodox_pretty(
+    _______, _______, _______, _______, _______,         _______, _______,                        KC_INSERT,         C(KC_DELETE),    C(KC_HOME),    KC_PGUP,      C(KC_END),      _______,       _______,
     _______, _______, _______, _______, _______,         _______, _______,                        KC_AUDIO_VOL_UP,   KC_DELETE,       KC_HOME,       KC_UP,        KC_END,         KC_PSCREEN,    _______,
     _______, _______, _______, _______, _______,         _______,                                                    KC_BSPACE,       KC_LEFT,       KC_DOWN,      KC_RIGHT,       A(KC_PSCREEN), _______,
-    _______, _______, _______, _______, _______,         _______, _______,                        KC_AUDIO_VOL_DOWN, C(KC_BSPACE),    C(S(KC_LEFT)), S(KC_DOWN),   C(S(KC_RIGHT)), _______,       _______,
+    _______, _______, _______, _______, _______,         _______, _______,                        KC_AUDIO_VOL_DOWN, C(KC_BSPACE),    C(KC_LEFT),    KC_PGDN,      C(KC_RIGHT),    _______,       _______,
     _______, _______, _______, _______, TD(TD_COPY_CUT),                                                                              KC_BP_PASTE,   S(KC_INSERT), _______,        _______,       _______,
+                                                                  _______, _______,      _______, KC_AUDIO_MUTE,
+                                                                           _______,      _______,
+                                                         _______, _______, _______,      _______, _______, _______
+  ),
+  [MISCR2] = LAYOUT_ergodox_pretty(
+    _______, _______, _______, _______, _______,         _______, _______,                        _______,    C(KC_DELETE),    C(S(KC_HOME)), C(S(KC_UP)),   C(S(KC_END)),   _______,       _______,
+    _______, _______, _______, _______, _______,         _______, _______,                        C(S(BP_Z)), KC_DELETE,       S(KC_HOME),    S(KC_UP),      S(KC_END),      KC_PSCREEN,    _______,
+    _______, _______, _______, _______, _______,         _______,                                             KC_BSPACE,       S(KC_LEFT),    S(KC_DOWN),    S(KC_RIGHT),    A(KC_PSCREEN), _______,
+    _______, _______, _______, _______, _______,         _______, _______,                        C(BP_Z),    C(KC_BSPACE),    C(S(KC_LEFT)), C(S(KC_DOWN)), C(S(KC_RIGHT)), _______,       _______,
+    _______, _______, _______, _______, TD(TD_COPY_CUT),                                                                       KC_BP_PASTE,   S(KC_INSERT),  _______,        _______,       _______,
                                                                   _______, _______,      _______, _______,
                                                                            _______,      _______,
-                                                         _______, _______, _______,      _______, _______, KC_AUDIO_MUTE
+                                                         _______, _______, _______,      _______, _______, _______
   ),
   [NUMPAD] = LAYOUT_ergodox_pretty(
-    _______, _______, _______, _______, _______,   _______, _______,                          _______, _______, KC_KP_PLUS, KC_KP_MINUS, KC_KP_SLASH, KC_KP_ASTERISK, _______,
-    _______, KC_F1,   KC_F2,   KC_F3,   KC_F4,     KC_F5,   _______,                          _______, KC_F6,   KC_F7,      KC_F8,       KC_F9,       KC_F10,         KC_F11, 
-    _______, KC_KP_1, KC_KP_2, KC_KP_3, KC_KP_4,   KC_KP_5,                                            KC_KP_6, KC_KP_7,    KC_KP_8,     KC_KP_9,     KC_KP_0,        KC_F12, 
-    _______, _______, _______, _______, KC_KP_DOT, _______, _______,                          _______, _______, _______,    _______,     _______,     _______,        _______,
-    _______, _______, _______, _______, _______,                                                                _______,    _______,     _______,     _______,        _______,
+    _______, _______,      _______, _______,      _______,   _______,      _______,                          _______, _______,      KC_KP_PLUS, KC_KP_MINUS,  KC_KP_SLASH, KC_KP_ASTERISK,  _______,
+    _______, KC_F1,        KC_F2,   SFT_T(KC_F3), KC_F4,     KC_F5,        _______,                          _______, KC_F6,        KC_F7,      SFT_T(KC_F8), KC_F9,       KC_F10,          KC_F11, 
+    _______, KC_KP_1,      KC_KP_2, KC_KP_3,      KC_KP_4,   KC_KP_5,                                                 KC_KP_6,      KC_KP_7,    KC_KP_8,      KC_KP_9,     KC_KP_0,         KC_F12, 
+    _______, CTL_T(KC_NO), _______, _______,      KC_KP_DOT, ALT_T(KC_NO), _______,                          _______, ALT_T(KC_NO), _______,    _______,     _______,      RCTL_T(KC_NO),   _______,
+    _______, _______,      _______, _______,      _______,                                                                          _______,    _______,     _______,      _______,         _______,
                                                             _______, _______,        _______, _______,
                                                                      _______,        _______,
                                                    _______, _______, _______,        _______, _______, _______
@@ -228,17 +222,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                           _______, _______,        _______, _______,
                                                                    _______,        _______,
                                                  _______, _______, _______,        _______, _______, _______
-  ),
-  [MODS] = LAYOUT_ergodox_pretty(
-    _______, _______, _______, _______,            _______,                       _______,   _______,                          _______, _______, _______,                       _______,            _______, _______, _______,
-    _______, _______, _______, _______,            LM(BEPO, MOD_LCTL | MOD_LSFT), _______,   _______,                          _______, _______, LM(BEPO, MOD_LCTL | MOD_LSFT), _______,            _______, _______, _______,
-    _______, _______, _______, LM(BEPO, MOD_LSFT), LM(BEPO, MOD_LCTL),            KC_TAB,                                               _______, LM(BEPO, MOD_LCTL),            LM(BEPO, MOD_LSFT), _______, _______, _______,
-    _______, _______, _______, _______,            _______,                       S(KC_TAB), _______,                          _______, _______, _______,                       _______,            _______, _______, _______,
-    _______, _______, _______, _______,            _______,                                                                                      _______,                       _______,            _______, _______, _______,
-                                                                                             _______, _______,        _______, _______,
-                                                                                                      _______,        _______,
-                                                                                    _______, _______, _______,        _______, _______, _______
-  ),
+  )
 };
 
 rgblight_config_t rgblight_config;
@@ -292,30 +276,30 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   uint8_t temp_mods = get_mods();
 
   switch (keycode) {
-    // Protection de la ligne de repos si on est sur MISCR
+    // Protection de la ligne de repos si on est sur MISCR1
     case BP_A:
-      if (record->event.pressed && biton32(layer_state) == MISCR) {
+      if (record->event.pressed && biton32(layer_state) == MISCR1) {
         SEND_STRING("ea");
         return false;
       } else {
         break;
       }
     case BP_U:
-      if (record->event.pressed && biton32(layer_state) == MISCR) {
+      if (record->event.pressed && biton32(layer_state) == MISCR1) {
         SEND_STRING("eu");
         return false;
       } else {
         break;
       }
     case BP_I:
-      if (record->event.pressed && biton32(layer_state) == MISCR) {
+      if (record->event.pressed && biton32(layer_state) == MISCR1) {
         SEND_STRING("ei");
         return false;
       } else {
         break;
       }
     case BP_X:
-      if (record->event.pressed && biton32(layer_state) == MISCR) {
+      if (record->event.pressed && biton32(layer_state) == MISCR1) {
         SEND_STRING("ex");
         return false;
       } else {
@@ -410,17 +394,17 @@ uint32_t layer_state_set_user(uint32_t state) {
       case MISCL:
         ergodox_right_led_1_on();
         break;
-      case MISCR:
+      case MISCR1:
         ergodox_right_led_2_on();
         break;
-      case NUMPAD:
+      case MISCR2:
         ergodox_right_led_3_on();
-        break;
-      case MOUSE:
+        break;  
+      case NUMPAD:
         ergodox_right_led_1_on();
         ergodox_right_led_2_on();
         break;
-      case MODS:
+      case MOUSE:
         ergodox_right_led_1_on();
         ergodox_right_led_3_on();
         break;
@@ -437,7 +421,7 @@ uint32_t layer_state_set_user(uint32_t state) {
         break;
     }
     switch (layer) {
-      case BEPO ... MODS:
+      case BEPO ... MOUSE:
         if(!disable_layer_color) {
           rgblight_enable_noeeprom();
           rgblight_mode_noeeprom(1);
