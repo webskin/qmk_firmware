@@ -24,7 +24,8 @@
 
 enum {
   BEPO,
-  MISCL,
+  MISCL1,
+  MISCL2,
   MISCR1,
   MISCR2,
   NUMPAD,
@@ -41,103 +42,26 @@ enum custom_keycodes {
 // Tap Dance Declarations
 enum {
   TD_COPY_CUT,
-  TD_LBRC_RBRC,
-  TD_LCBR_RCBR,
-  TD_LPRN_RPRN,
-  TD_LESS_GRTR,
-  TD_LGIL_RGIL,
+  TD_LESS_LGIL,
+  TD_GRTR_RGIL,
   TD_V_W,
-  CT_Q_Z,      
+  TD_Q_Z,      
   TD_EGRV_ESC,   
   TD_DLR_HASH,
 };
 
-bool q_g__underscore_combo_occured = false;
-
-// Tap Dance Definitions
-
-#    define ACTION_TAP_DANCE_DOUBLE_COMBO_AWARE(kc1, kc2) \
-        { .fn = {my_tap_dance_pair_on_each_tap, my_tap_dance_pair_finished, my_tap_dance_pair_reset}, .user_data = (void *)&((qk_tap_dance_pair_t){kc1, kc2}), }
-
-void my_tap_dance_pair_on_each_tap(qk_tap_dance_state_t *state, void *user_data) {
-  qk_tap_dance_pair_t *pair = (qk_tap_dance_pair_t *)user_data;
-
-  if (state->count == 2) {
-      register_code16(pair->kc2);
-      state->finished = true;
-  }
-}
-
-void my_tap_dance_pair_finished(qk_tap_dance_state_t *state, void *user_data) {
-  qk_tap_dance_pair_t *pair = (qk_tap_dance_pair_t *)user_data;
-
-  if (state->count == 1) {
-    if (
-      !(pair->kc1 == BP_Q && q_g__underscore_combo_occured) 
-      ) {
-      register_code16(pair->kc1);
-    }
-  } else if (state->count == 2) {
-    register_code16(pair->kc2);
-  }
-}
-
-void my_tap_dance_pair_reset(qk_tap_dance_state_t *state, void *user_data) {
-  qk_tap_dance_pair_t *pair = (qk_tap_dance_pair_t *)user_data;
-
-  if (state->count == 1) {
-    if (
-      !(pair->kc1 == BP_Q && q_g__underscore_combo_occured) 
-      ) {
-      unregister_code16(pair->kc1);
-    }
-  } else if (state->count == 2) {
-    unregister_code16(pair->kc2);
-  }
-
-  if (q_g__underscore_combo_occured) {
-    q_g__underscore_combo_occured = false;
-  }
-}
-
 qk_tap_dance_action_t tap_dance_actions[] = {
   [TD_COPY_CUT]  = ACTION_TAP_DANCE_DOUBLE(KC_BP_COPY, KC_BP_CUT),
-  [TD_LBRC_RBRC] = ACTION_TAP_DANCE_DOUBLE(BP_LBRC, BP_RBRC),
-  [TD_LCBR_RCBR] = ACTION_TAP_DANCE_DOUBLE(BP_LCBR, BP_RCBR),
-  [TD_LPRN_RPRN] = ACTION_TAP_DANCE_DOUBLE(BP_LPRN, BP_RPRN),
-  [TD_LESS_GRTR] = ACTION_TAP_DANCE_DOUBLE(BP_LESS, BP_GRTR),
-  [TD_LGIL_RGIL] = ACTION_TAP_DANCE_DOUBLE(BP_LGIL, BP_RGIL),
+
+  [TD_LESS_LGIL] = ACTION_TAP_DANCE_DOUBLE(BP_LESS, BP_LGIL),
+  [TD_GRTR_RGIL] = ACTION_TAP_DANCE_DOUBLE(BP_GRTR, BP_RGIL),
+
   [TD_V_W]       = ACTION_TAP_DANCE_DOUBLE(BP_V, BP_W),
-  [CT_Q_Z]       = ACTION_TAP_DANCE_DOUBLE_COMBO_AWARE(BP_Q, BP_Z),
+  [TD_Q_Z]       = ACTION_TAP_DANCE_DOUBLE(BP_Q, BP_Z),
   [TD_EGRV_ESC]  = ACTION_TAP_DANCE_DOUBLE(BP_EGRV, KC_ESC),
   [TD_DLR_HASH]  = ACTION_TAP_DANCE_DOUBLE(BP_DLR, BP_HASH),
 };
 
-// Combos definitions
-enum combos {
-  // G + Q -> Underscore
-  G_Q__UNDERSCORE
-};
-
-const uint16_t PROGMEM g_q_combo[] = {BP_G, BP_Q, COMBO_END};
-combo_t key_combos[COMBO_COUNT] = {
-  [G_Q__UNDERSCORE] = COMBO_ACTION(g_q_combo),
-};
-void process_combo_event(uint8_t combo_index, bool pressed) {
-  switch(combo_index) {
-
-    case G_Q__UNDERSCORE:
-      if (pressed) {
-        uint8_t temp_mods = get_mods();
-        // On veut absolutement un underscore même si shift est appuyé
-        clear_mods();
-        tap_code16(ALGR(KC_SPACE));
-        set_mods(temp_mods);
-        q_g__underscore_combo_occured = true;
-      }
-      break;
-  }
-}
 
 uint16_t get_tapping_term(uint16_t keycode) {
   switch (keycode) {
@@ -155,7 +79,8 @@ uint16_t get_tapping_term(uint16_t keycode) {
       return 300;  
     case LT(MISCR1,BP_E):
     case LT(MISCR2,BP_COMM):
-    case LT(MISCL,BP_T):
+    case LT(MISCL1,BP_T):
+    case LT(MISCL2,BP_C):
       return 200;
     default:
       return TAPPING_TERM;
@@ -164,21 +89,31 @@ uint16_t get_tapping_term(uint16_t keycode) {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [BEPO] = LAYOUT_ergodox_pretty(
-    _______, _______,        _______, _______,     _______,             _______,            _______,                                _______, _______,        _______,        BP_MINS,     _______, _______,      _______,
-    BP_DLR,  BP_B,           BP_ECUT, SFT_T(BP_P), BP_O,                TD(TD_EGRV_ESC),    _______,                                _______, BP_DCRC,        TD(TD_V_W),     SFT_T(BP_D), BP_L,    BP_J,         _______,
-    KC_TAB,  BP_A,           BP_U,    BP_I,        LT(MISCR1,BP_E),     LT(MISCR2,BP_COMM),                                                  BP_C,           LT(MISCL,BP_T), BP_S,        BP_R,    BP_N,         BP_M,
-    _______, CTL_T(BP_AGRV), BP_Y,    BP_X,        BP_DOT,              ALT_T(BP_K),        _______,                                _______, ALT_T(BP_APOS), TD(CT_Q_Z),     BP_G,        BP_H,    RCTL_T(BP_F), BP_CCED,
-    _______, KC_LGUI,     _______,    _______,     LT(NUMPAD,KC_SPACE),                                                                                      KC_SPACE,       KC_RALT,     _______, _______,      _______,
+    _______, BP_EN_DASH,     BP_EM_DASH, BP_UNDS,     _______,             _______,            _______,                                _______, _______,          _______,         BP_MINS,     _______, _______,      _______,
+    BP_DLR,  BP_B,           BP_ECUT,    SFT_T(BP_P), BP_O,                TD(TD_EGRV_ESC),    _______,                                _______, BP_DCRC,          TD(TD_V_W),      SFT_T(BP_D), BP_L,    BP_J,         _______,
+    KC_TAB,  BP_A,           BP_U,       BP_I,        LT(MISCR1,BP_E),     LT(MISCR2,BP_COMM),                                                  LT(MISCL2, BP_C), LT(MISCL1,BP_T), BP_S,        BP_R,    BP_N,         BP_M,
+    _______, CTL_T(BP_AGRV), BP_Y,       BP_X,        BP_DOT,              ALT_T(BP_K),        _______,                                _______, ALT_T(BP_APOS),   TD(TD_Q_Z),      BP_G,        BP_H,    RCTL_T(BP_F), BP_CCED,
+    _______, KC_LGUI,     _______,       _______,     LT(NUMPAD,KC_SPACE),                                                                                        KC_SPACE,        KC_RALT,     _______, _______,      _______,
                                                                                A(KC_APPLICATION), _______,        KC_CALCULATOR, _______,
                                                                                                   _______,        _______,
                                                                         OSM(MOD_LSFT), _______, MO(MOUSE),        _______, _______, KC_ENTER
   ),
-  [MISCL] = LAYOUT_ergodox_pretty(
-    _______,             _______,             TILD_ARROW, FAT_ARROW,  TD(TD_LBRC_RBRC), _______, _______,                          _______, _______, _______, _______, _______, _______, _______,
-    _______,             TD(TD_DLR_HASH),     BP_PLUS,    THIN_ARROW, TD(TD_LCBR_RCBR), BP_GRV,  _______,                          _______, _______, _______, _______, _______, _______, _______,
-    S(KC_TAB),           BP_SLSH,             BP_ASTR,    BP_EQL,     TD(TD_LPRN_RPRN), BP_SCLN,                                            _______, _______, _______, _______, _______, _______,
-    KC_MEDIA_PLAY_PAUSE, BP_BSLS,             BP_AT,      BP_DQOT,    TD(TD_LESS_GRTR), BP_TILD, _______,                          _______, _______, _______, _______, _______, _______, _______,
-    KC_MEDIA_PREV_TRACK, KC_MEDIA_NEXT_TRACK, BP_DEGR,    BP_PERC,    TD(TD_LGIL_RGIL),                                                              _______, _______, _______, _______, _______,
+  [MISCL1] = LAYOUT_ergodox_pretty(
+    _______,             _______,             TILD_ARROW, FAT_ARROW,  BP_DEGR,  _______, _______,                          _______, _______, _______, _______, _______, _______, _______,
+    _______,             TD(TD_DLR_HASH),     BP_PLUS,    THIN_ARROW, BP_PERC,  BP_GRV,  _______,                          _______, _______, _______, _______, _______, _______, _______,
+    S(KC_TAB),           BP_SLSH,             BP_ASTR,    BP_MINS,    BP_EQL,   BP_SCLN,                                            _______, _______, _______, _______, _______, _______,
+    KC_MEDIA_PLAY_PAUSE, BP_BSLS,             BP_AT,      BP_DQOT,    BP_COLON, BP_TILD, _______,                          _______, _______, _______, _______, _______, _______, _______,
+    KC_MEDIA_PREV_TRACK, KC_MEDIA_NEXT_TRACK, _______,    _______,    _______,                                                              _______, _______, _______, _______, _______,
+                                                                                           _______, _______,        _______, _______,
+                                                                                                    _______,        _______,
+                                                                                  _______, _______, _______,        _______, _______, _______
+  ),
+  [MISCL2] = LAYOUT_ergodox_pretty(
+    _______, _______, _______,    _______,    BP_LBRC,          BP_RBRC,          _______,                          _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______,    THIN_ARROW, BP_LCBR,          BP_RCBR,          _______,                          _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______,    _______,    BP_LPRN,          BP_RPRN,                                            _______, _______, _______, _______, _______, _______,
+    _______, _______, _______,    _______,    TD(TD_LESS_LGIL), TD(TD_GRTR_RGIL), _______,                          _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______,    _______,    _______,                                                              _______, _______, _______, _______, _______,
                                                                                            _______, _______,        _______, _______,
                                                                                                     _______,        _______,
                                                                                   _______, _______, _______,        _______, _______, _______
@@ -306,53 +241,58 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         break;
       }
 
-    // Protection de la ligne de repos si on est sur MISCL
+    // Protection de la ligne de repos si on est sur MISCL1
     case BP_C:
-      if (record->event.pressed && biton32(layer_state) == MISCL) {
+      if (record->event.pressed && biton32(layer_state) == MISCL1) {
         SEND_STRING("tc");
         return false;
       } else {
         break;
       }
     case BP_S:
-      if (record->event.pressed && biton32(layer_state) == MISCL) {
+      if (record->event.pressed && biton32(layer_state) == MISCL1) {
         SEND_STRING("ts");
         return false;
       } else {
         break;
       }
     case BP_R:
-      if (record->event.pressed && biton32(layer_state) == MISCL) {
+      if (record->event.pressed && biton32(layer_state) == MISCL1) {
         SEND_STRING("tr");
         return false;
       } else {
         break;
       }
     case BP_N:
-      if (record->event.pressed && biton32(layer_state) == MISCL) {
+      if (record->event.pressed && biton32(layer_state) == MISCL1) {
         SEND_STRING("tn");
         return false;
       } else {
         break;
       }
     case BP_M:
-      if (record->event.pressed && biton32(layer_state) == MISCL) {
+      if (record->event.pressed && biton32(layer_state) == MISCL1) {
         SEND_STRING("tm");
         return false;
       } else {
         break;
       }
     case THIN_ARROW:
-      if (record->event.pressed && biton32(layer_state) == MISCL) {
+      if (record->event.pressed && biton32(layer_state) == MISCL1) {
         clear_mods();
         SEND_STRING("->");
+        set_mods(temp_mods);
+        return false;
+      } else if (record->event.pressed && biton32(layer_state) == MISCL2) {
+        clear_mods();
+        SEND_STRING("<-");
         set_mods(temp_mods);
         return false;
       } else {
         break;
       }
     case FAT_ARROW:
-      if (record->event.pressed && biton32(layer_state) == MISCL) {
+      if (record->event.pressed && biton32(layer_state) == MISCL1) {
         clear_mods();
         SEND_STRING("=>");
         set_mods(temp_mods);
@@ -361,7 +301,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         break;
       }
     case TILD_ARROW:
-      if (record->event.pressed && biton32(layer_state) == MISCL) {
+      if (record->event.pressed && biton32(layer_state) == MISCL1) {
         clear_mods();
         SEND_STRING("~>");
         set_mods(temp_mods);
@@ -379,6 +319,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         disable_layer_color ^= 1;
       }
       return false;
+    case BP_UNDS:
+      if (record->event.pressed) {
+        clear_mods();
+        SEND_STRING("_");
+        set_mods(temp_mods);
+        return false;
+      }
+      break;
   }
   return true;
 }
@@ -391,24 +339,24 @@ uint32_t layer_state_set_user(uint32_t state) {
     ergodox_right_led_2_off();
     ergodox_right_led_3_off();
     switch (layer) {
-      case MISCL:
+      case MISCL1:
         ergodox_right_led_1_on();
         break;
-      case MISCR1:
+      case MISCL2:
         ergodox_right_led_2_on();
         break;
-      case MISCR2:
+      case MISCR1:
         ergodox_right_led_3_on();
+        break;
+      case MISCR2:
+        ergodox_right_led_1_on();
+        ergodox_right_led_2_on();
         break;  
       case NUMPAD:
         ergodox_right_led_1_on();
-        ergodox_right_led_2_on();
-        break;
-      case MOUSE:
-        ergodox_right_led_1_on();
         ergodox_right_led_3_on();
         break;
-      case 6:
+      case MOUSE:
         ergodox_right_led_2_on();
         ergodox_right_led_3_on();
         break;
