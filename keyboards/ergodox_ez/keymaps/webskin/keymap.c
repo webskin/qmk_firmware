@@ -37,6 +37,7 @@ enum custom_keycodes {
   THIN_ARROW,
   FAT_ARROW,
   TILD_ARROW,
+  PIPE_ARROW,
 };
 
 // Tap Dance Declarations
@@ -99,7 +100,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                         OSM(MOD_LSFT), _______, MO(MOUSE),        _______, _______, KC_ENTER
   ),
   [MISCL1] = LAYOUT_ergodox_pretty(
-    _______,             _______,             TILD_ARROW, FAT_ARROW,  BP_DEGR,  _______, _______,                          _______, _______, _______, _______, _______, _______, _______,
+    _______,             PIPE_ARROW,          TILD_ARROW, FAT_ARROW,  BP_DEGR,  _______, _______,                          _______, _______, _______, _______, _______, _______, _______,
     _______,             TD(TD_DLR_HASH),     BP_PLUS,    THIN_ARROW, BP_PERC,  BP_GRV,  _______,                          _______, _______, _______, _______, _______, _______, _______,
     S(KC_TAB),           BP_SLSH,             BP_ASTR,    BP_MINS,    BP_EQL,   BP_SCLN,                                            _______, _______, _______, _______, _______, _______,
     KC_MEDIA_PLAY_PAUSE, BP_BSLS,             BP_AT,      BP_DQOT,    BP_COLON, BP_TILD, _______,                          _______, _______, _______, _______, _______, _______, _______,
@@ -109,8 +110,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                   _______, _______, _______,        _______, _______, _______
   ),
   [MISCL2] = LAYOUT_ergodox_pretty(
-    _______, _______, _______,    _______,    BP_LBRC,          BP_RBRC,          _______,                          _______, _______, _______, _______, _______, _______, _______,
-    _______, _______, _______,    THIN_ARROW, BP_LCBR,          BP_RCBR,          _______,                          _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______,    _______,    _______,          _______,          _______,                          _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______,    THIN_ARROW, BP_LBRC,          BP_RBRC,          _______,                          _______, _______, _______, _______, _______, _______, _______,
     _______, _______, _______,    _______,    BP_LPRN,          BP_RPRN,                                            _______, _______, _______, _______, _______, _______,
     _______, _______, _______,    _______,    TD(TD_LESS_LGIL), TD(TD_GRTR_RGIL), _______,                          _______, _______, _______, _______, _______, _______, _______,
     _______, _______, _______,    _______,    _______,                                                              _______, _______, _______, _______, _______,
@@ -304,6 +305,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       if (record->event.pressed && biton32(layer_state) == MISCL1) {
         clear_mods();
         SEND_STRING("~>");
+        set_mods(temp_mods);
+        return false;
+      } else {
+        break;
+      }
+    case PIPE_ARROW:
+      if (record->event.pressed && biton32(layer_state) == MISCL1) {
+        clear_mods();
+        SEND_STRING("|>");
         set_mods(temp_mods);
         return false;
       } else {
