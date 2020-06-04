@@ -14,6 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <ctype.h>
 #include "quantum.h"
 
 #ifdef PROTOCOL_LUFA
@@ -210,6 +211,12 @@ bool process_record_quantum(keyrecord_t *record) {
 #if defined(RGB_MATRIX_ENABLE)
             process_rgb_matrix(keycode, record) &&
 #endif
+#ifdef ORYX_ENABLE
+            process_record_oryx(keycode, record) &&
+#endif
+#if defined(VIA_ENABLE)
+            process_record_via(keycode, record) &&
+#endif
             process_record_kb(keycode, record) &&
 #if defined(MIDI_ENABLE) && defined(MIDI_ADVANCED)
             process_midi(keycode, record) &&
@@ -249,6 +256,9 @@ bool process_record_quantum(keyrecord_t *record) {
 #endif
 #ifdef MAGIC_KEYCODE_ENABLE
             process_magic(keycode, record) &&
+#endif
+#ifdef GRAVE_ESC_ENABLE
+            process_grave_esc(keycode, record) &&
 #endif
 #if defined(RGBLIGHT_ENABLE) || defined(RGB_MATRIX_ENABLE)
             process_rgb(keycode, record) &&
@@ -308,109 +318,106 @@ bool process_record_quantum(keyrecord_t *record) {
                 return false;
 #endif
 #ifdef WEBUSB_ENABLE
-            case WEBUSB_PAIR:
-                webusb_state.pairing = true;
-                return false;
-#endif
-        }
-    }
-
-    // keycodes that depend on both pressed and non-pressed state
-    switch (keycode) {
-        case GRAVE_ESC: {
-            /* true if the last press of GRAVE_ESC was shifted (i.e. GUI or SHIFT were pressed), false otherwise.
-            * Used to ensure that the correct keycode is released if the key is released.
-            */
-            static bool grave_esc_was_shifted = false;
-
-            uint8_t shifted = get_mods() & ((MOD_BIT(KC_LSHIFT) | MOD_BIT(KC_RSHIFT) | MOD_BIT(KC_LGUI) | MOD_BIT(KC_RGUI)));
-
-#ifdef GRAVE_ESC_ALT_OVERRIDE
-            // if ALT is pressed, ESC is always sent
-            // this is handy for the cmd+opt+esc shortcut on macOS, among other things.
-            if (get_mods() & (MOD_BIT(KC_LALT) | MOD_BIT(KC_RALT))) {
-                shifted = 0;
-            }
-#endif
-
-#ifdef GRAVE_ESC_CTRL_OVERRIDE
-            // if CTRL is pressed, ESC is always sent
-            // this is handy for the ctrl+shift+esc shortcut on windows, among other things.
-            if (get_mods() & (MOD_BIT(KC_LCTL) | MOD_BIT(KC_RCTL))) {
-                shifted = 0;
-            }
-#endif
-
-#ifdef GRAVE_ESC_GUI_OVERRIDE
-            // if GUI is pressed, ESC is always sent
-            if (get_mods() & (MOD_BIT(KC_LGUI) | MOD_BIT(KC_RGUI))) {
-                shifted = 0;
-            }
-#endif
-
-#ifdef GRAVE_ESC_SHIFT_OVERRIDE
-            // if SHIFT is pressed, ESC is always sent
-            if (get_mods() & (MOD_BIT(KC_LSHIFT) | MOD_BIT(KC_RSHIFT))) {
-                shifted = 0;
-            }
-#endif
-
-            if (record->event.pressed) {
-                grave_esc_was_shifted = shifted;
-                add_key(shifted ? KC_GRAVE : KC_ESCAPE);
-            } else {
-                del_key(grave_esc_was_shifted ? KC_GRAVE : KC_ESCAPE);
-            }
-
-            send_keyboard_report();
+        case WEBUSB_PAIR:
+            webusb_state.pairing ^= true;
             return false;
+#endif
         }
     }
 
     return process_action_kb(record);
 }
 
-__attribute__((weak)) const bool ascii_to_shift_lut[128] PROGMEM = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+// clang-format off
 
-                                                                    0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0};
+/* Bit-Packed look-up table to convert an ASCII character to whether
+ * [Shift] needs to be sent with the keycode.
+ */
+__attribute__((weak)) const uint8_t ascii_to_shift_lut[16] PROGMEM = {
+    KCLUT_ENTRY(0, 0, 0, 0, 0, 0, 0, 0),
+    KCLUT_ENTRY(0, 0, 0, 0, 0, 0, 0, 0),
+    KCLUT_ENTRY(0, 0, 0, 0, 0, 0, 0, 0),
+    KCLUT_ENTRY(0, 0, 0, 0, 0, 0, 0, 0),
 
-__attribute__((weak)) const bool ascii_to_altgr_lut[128] PROGMEM = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    KCLUT_ENTRY(0, 1, 1, 1, 1, 1, 1, 0),
+    KCLUT_ENTRY(1, 1, 1, 1, 0, 0, 0, 0),
+    KCLUT_ENTRY(0, 0, 0, 0, 0, 0, 0, 0),
+    KCLUT_ENTRY(0, 0, 1, 0, 1, 0, 1, 1),
+    KCLUT_ENTRY(1, 1, 1, 1, 1, 1, 1, 1),
+    KCLUT_ENTRY(1, 1, 1, 1, 1, 1, 1, 1),
+    KCLUT_ENTRY(1, 1, 1, 1, 1, 1, 1, 1),
+    KCLUT_ENTRY(1, 1, 1, 0, 0, 0, 1, 1),
+    KCLUT_ENTRY(0, 0, 0, 0, 0, 0, 0, 0),
+    KCLUT_ENTRY(0, 0, 0, 0, 0, 0, 0, 0),
+    KCLUT_ENTRY(0, 0, 0, 0, 0, 0, 0, 0),
+    KCLUT_ENTRY(0, 0, 0, 1, 1, 1, 1, 0),
+};
 
-                                                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+/* Bit-Packed look-up table to convert an ASCII character to whether
+ * [AltGr] needs to be sent with the keycode.
+ */
+__attribute__((weak)) const uint8_t ascii_to_altgr_lut[16] PROGMEM = {
+    KCLUT_ENTRY(0, 0, 0, 0, 0, 0, 0, 0),
+    KCLUT_ENTRY(0, 0, 0, 0, 0, 0, 0, 0),
+    KCLUT_ENTRY(0, 0, 0, 0, 0, 0, 0, 0),
+    KCLUT_ENTRY(0, 0, 0, 0, 0, 0, 0, 0),
 
-__attribute__((weak)) const uint8_t ascii_to_keycode_lut[128] PROGMEM = {// NUL   SOH      STX      ETX      EOT      ENQ      ACK      BEL
-                                                                         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                                                                         // BS    TAB      LF       VT       FF       CR       SO       SI
-                                                                         KC_BSPC, KC_TAB, KC_ENT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                                                                         // DLE   DC1      DC2      DC3      DC4      NAK      SYN      ETB
-                                                                         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                                                                         // CAN   EM       SUB      ESC      FS       GS       RS       US
-                                                                         XXXXXXX, XXXXXXX, XXXXXXX, KC_ESC, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+    KCLUT_ENTRY(0, 0, 0, 0, 0, 0, 0, 0),
+    KCLUT_ENTRY(0, 0, 0, 0, 0, 0, 0, 0),
+    KCLUT_ENTRY(0, 0, 0, 0, 0, 0, 0, 0),
+    KCLUT_ENTRY(0, 0, 0, 0, 0, 0, 0, 0),
+    KCLUT_ENTRY(0, 0, 0, 0, 0, 0, 0, 0),
+    KCLUT_ENTRY(0, 0, 0, 0, 0, 0, 0, 0),
+    KCLUT_ENTRY(0, 0, 0, 0, 0, 0, 0, 0),
+    KCLUT_ENTRY(0, 0, 0, 0, 0, 0, 0, 0),
+    KCLUT_ENTRY(0, 0, 0, 0, 0, 0, 0, 0),
+    KCLUT_ENTRY(0, 0, 0, 0, 0, 0, 0, 0),
+    KCLUT_ENTRY(0, 0, 0, 0, 0, 0, 0, 0),
+    KCLUT_ENTRY(0, 0, 0, 0, 0, 0, 0, 0),
+};
 
-                                                                         //       !        "        #        $        %        &        '
-                                                                         KC_SPC, KC_1, KC_QUOT, KC_3, KC_4, KC_5, KC_7, KC_QUOT,
-                                                                         // (     )        *        +        ,        -        .        /
-                                                                         KC_9, KC_0, KC_8, KC_EQL, KC_COMM, KC_MINS, KC_DOT, KC_SLSH,
-                                                                         // 0     1        2        3        4        5        6        7
-                                                                         KC_0, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7,
-                                                                         // 8     9        :        ;        <        =        >        ?
-                                                                         KC_8, KC_9, KC_SCLN, KC_SCLN, KC_COMM, KC_EQL, KC_DOT, KC_SLSH,
-                                                                         // @     A        B        C        D        E        F        G
-                                                                         KC_2, KC_A, KC_B, KC_C, KC_D, KC_E, KC_F, KC_G,
-                                                                         // H     I        J        K        L        M        N        O
-                                                                         KC_H, KC_I, KC_J, KC_K, KC_L, KC_M, KC_N, KC_O,
-                                                                         // P     Q        R        S        T        U        V        W
-                                                                         KC_P, KC_Q, KC_R, KC_S, KC_T, KC_U, KC_V, KC_W,
-                                                                         // X     Y        Z        [        \        ]        ^        _
-                                                                         KC_X, KC_Y, KC_Z, KC_LBRC, KC_BSLS, KC_RBRC, KC_6, KC_MINS,
-                                                                         // `     a        b        c        d        e        f        g
-                                                                         KC_GRV, KC_A, KC_B, KC_C, KC_D, KC_E, KC_F, KC_G,
-                                                                         // h     i        j        k        l        m        n        o
-                                                                         KC_H, KC_I, KC_J, KC_K, KC_L, KC_M, KC_N, KC_O,
-                                                                         // p     q        r        s        t        u        v        w
-                                                                         KC_P, KC_Q, KC_R, KC_S, KC_T, KC_U, KC_V, KC_W,
-                                                                         // x     y        z        {        |        }        ~        DEL
-                                                                         KC_X, KC_Y, KC_Z, KC_LBRC, KC_BSLS, KC_RBRC, KC_GRV, KC_DEL};
+/* Look-up table to convert an ASCII character to a keycode.
+ */
+__attribute__((weak)) const uint8_t ascii_to_keycode_lut[128] PROGMEM = {
+    // NUL   SOH      STX      ETX      EOT      ENQ      ACK      BEL
+    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+    // BS    TAB      LF       VT       FF       CR       SO       SI
+    KC_BSPC, KC_TAB,  KC_ENT,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+    // DLE   DC1      DC2      DC3      DC4      NAK      SYN      ETB
+    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+    // CAN   EM       SUB      ESC      FS       GS       RS       US
+    XXXXXXX, XXXXXXX, XXXXXXX, KC_ESC,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+
+    //       !        "        #        $        %        &        '
+    KC_SPC,  KC_1,    KC_QUOT, KC_3,    KC_4,    KC_5,    KC_7,    KC_QUOT,
+    // (     )        *        +        ,        -        .        /
+    KC_9,    KC_0,    KC_8,    KC_EQL,  KC_COMM, KC_MINS, KC_DOT,  KC_SLSH,
+    // 0     1        2        3        4        5        6        7
+    KC_0,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,
+    // 8     9        :        ;        <        =        >        ?
+    KC_8,    KC_9,    KC_SCLN, KC_SCLN, KC_COMM, KC_EQL,  KC_DOT,  KC_SLSH,
+    // @     A        B        C        D        E        F        G
+    KC_2,    KC_A,    KC_B,    KC_C,    KC_D,    KC_E,    KC_F,    KC_G,
+    // H     I        J        K        L        M        N        O
+    KC_H,    KC_I,    KC_J,    KC_K,    KC_L,    KC_M,    KC_N,    KC_O,
+    // P     Q        R        S        T        U        V        W
+    KC_P,    KC_Q,    KC_R,    KC_S,    KC_T,    KC_U,    KC_V,    KC_W,
+    // X     Y        Z        [        \        ]        ^        _
+    KC_X,    KC_Y,    KC_Z,    KC_LBRC, KC_BSLS, KC_RBRC, KC_6,    KC_MINS,
+    // `     a        b        c        d        e        f        g
+    KC_GRV,  KC_A,    KC_B,    KC_C,    KC_D,    KC_E,    KC_F,    KC_G,
+    // h     i        j        k        l        m        n        o
+    KC_H,    KC_I,    KC_J,    KC_K,    KC_L,    KC_M,    KC_N,    KC_O,
+    // p     q        r        s        t        u        v        w
+    KC_P,    KC_Q,    KC_R,    KC_S,    KC_T,    KC_U,    KC_V,    KC_W,
+    // x     y        z        {        |        }        ~        DEL
+    KC_X,    KC_Y,    KC_Z,    KC_LBRC, KC_BSLS, KC_RBRC, KC_GRV,  KC_DEL
+};
+
+// clang-format on
+
+// Note: we bit-pack in "reverse" order to optimize loading
+#define PGM_LOADBIT(mem, pos) ((pgm_read_byte(&((mem)[(pos) / 8])) >> ((pos) % 8)) & 0x01)
 
 void send_string(const char *str) { send_string_with_delay(str, 0); }
 
@@ -420,19 +427,32 @@ void send_string_with_delay(const char *str, uint8_t interval) {
     while (1) {
         char ascii_code = *str;
         if (!ascii_code) break;
-        if (ascii_code == SS_TAP_CODE) {
-            // tap
-            uint8_t keycode = *(++str);
-            register_code(keycode);
-            unregister_code(keycode);
-        } else if (ascii_code == SS_DOWN_CODE) {
-            // down
-            uint8_t keycode = *(++str);
-            register_code(keycode);
-        } else if (ascii_code == SS_UP_CODE) {
-            // up
-            uint8_t keycode = *(++str);
-            unregister_code(keycode);
+        if (ascii_code == SS_QMK_PREFIX) {
+            ascii_code = *(++str);
+            if (ascii_code == SS_TAP_CODE) {
+                // tap
+                uint8_t keycode = *(++str);
+                register_code(keycode);
+                unregister_code(keycode);
+            } else if (ascii_code == SS_DOWN_CODE) {
+                // down
+                uint8_t keycode = *(++str);
+                register_code(keycode);
+            } else if (ascii_code == SS_UP_CODE) {
+                // up
+                uint8_t keycode = *(++str);
+                unregister_code(keycode);
+            } else if (ascii_code == SS_DELAY_CODE) {
+                // delay
+                int     ms      = 0;
+                uint8_t keycode = *(++str);
+                while (isdigit(keycode)) {
+                    ms *= 10;
+                    ms += keycode - '0';
+                    keycode = *(++str);
+                }
+                while (ms--) wait_ms(1);
+            }
         } else {
             send_char(ascii_code);
         }
@@ -449,19 +469,32 @@ void send_string_with_delay_P(const char *str, uint8_t interval) {
     while (1) {
         char ascii_code = pgm_read_byte(str);
         if (!ascii_code) break;
-        if (ascii_code == SS_TAP_CODE) {
-            // tap
-            uint8_t keycode = pgm_read_byte(++str);
-            register_code(keycode);
-            unregister_code(keycode);
-        } else if (ascii_code == SS_DOWN_CODE) {
-            // down
-            uint8_t keycode = pgm_read_byte(++str);
-            register_code(keycode);
-        } else if (ascii_code == SS_UP_CODE) {
-            // up
-            uint8_t keycode = pgm_read_byte(++str);
-            unregister_code(keycode);
+        if (ascii_code == SS_QMK_PREFIX) {
+            ascii_code = pgm_read_byte(++str);
+            if (ascii_code == SS_TAP_CODE) {
+                // tap
+                uint8_t keycode = pgm_read_byte(++str);
+                register_code(keycode);
+                unregister_code(keycode);
+            } else if (ascii_code == SS_DOWN_CODE) {
+                // down
+                uint8_t keycode = pgm_read_byte(++str);
+                register_code(keycode);
+            } else if (ascii_code == SS_UP_CODE) {
+                // up
+                uint8_t keycode = pgm_read_byte(++str);
+                unregister_code(keycode);
+            } else if (ascii_code == SS_DELAY_CODE) {
+                // delay
+                int     ms      = 0;
+                uint8_t keycode = pgm_read_byte(++str);
+                while (isdigit(keycode)) {
+                    ms *= 10;
+                    ms += keycode - '0';
+                    keycode = pgm_read_byte(++str);
+                }
+                while (ms--) wait_ms(1);
+            }
         } else {
             send_char(ascii_code);
         }
@@ -476,8 +509,8 @@ void send_string_with_delay_P(const char *str, uint8_t interval) {
 
 void send_char(char ascii_code) {
     uint8_t keycode    = pgm_read_byte(&ascii_to_keycode_lut[(uint8_t)ascii_code]);
-    bool    is_shifted = pgm_read_byte(&ascii_to_shift_lut[(uint8_t)ascii_code]);
-    bool    is_altgred = pgm_read_byte(&ascii_to_altgr_lut[(uint8_t)ascii_code]);
+    bool    is_shifted = PGM_LOADBIT(ascii_to_shift_lut, (uint8_t)ascii_code);
+    bool    is_altgred = PGM_LOADBIT(ascii_to_altgr_lut, (uint8_t)ascii_code);
 
     if (is_shifted) {
         register_code(KC_LSFT);
@@ -555,9 +588,7 @@ __attribute__((weak)) void bootmagic_lite(void) {
 
     // We need multiple scans because debouncing can't be turned off.
     matrix_scan();
-#if defined(DEBOUNCING_DELAY) && DEBOUNCING_DELAY > 0
-    wait_ms(DEBOUNCING_DELAY * 2);
-#elif defined(DEBOUNCE) && DEBOUNCE > 0
+#if defined(DEBOUNCE) && DEBOUNCE > 0
     wait_ms(DEBOUNCE * 2);
 #else
     wait_ms(30);
@@ -583,6 +614,9 @@ void matrix_init_quantum() {
     if (!eeconfig_is_enabled()) {
         eeconfig_init();
     }
+#if defined(ORYX_ENABLE) && defined(DYNAMIC_KEYMAP_ENABLE)
+    matrix_init_oryx();
+#endif
 #ifdef BACKLIGHT_ENABLE
 #    ifdef LED_MATRIX_ENABLE
     led_matrix_init();
@@ -628,12 +662,8 @@ void matrix_scan_quantum() {
     matrix_scan_combo();
 #endif
 
-#if defined(BACKLIGHT_ENABLE)
-#    if defined(LED_MATRIX_ENABLE)
+#ifdef LED_MATRIX_ENABLE
     led_matrix_task();
-#    elif defined(BACKLIGHT_PIN) || defined(BACKLIGHT_PINS)
-    backlight_task();
-#    endif
 #endif
 
 #ifdef RGB_MATRIX_ENABLE
@@ -774,3 +804,16 @@ __attribute__((weak)) void startup_user() {}
 __attribute__((weak)) void shutdown_user() {}
 
 //------------------------------------------------------------------------------
+
+#ifdef WEBUSB_ENABLE
+__attribute__((weak)) bool webusb_receive_user(uint8_t *data, uint8_t length) { return false; }
+__attribute__((weak)) bool webusb_receive_kb(uint8_t *data, uint8_t length) { return webusb_receive_user(data, length); }
+
+bool webusb_receive_quantum(uint8_t *data, uint8_t length) {
+#ifdef ORYX_ENABLE
+    return webusb_receive_oryx(data, length);
+#else
+    return webusb_receive_kb(data, length);
+#endif
+}
+#endif

@@ -3,12 +3,19 @@
 #include "eeprom.h"
 #include "eeconfig.h"
 #include "action_layer.h"
-
+#ifdef ORYX_ENABLE
+#    include "oryx.h"
+#endif
 #ifdef STM32_EEPROM_ENABLE
 #    include "hal.h"
 #    include "eeprom_stm32.h"
 #endif
 
+#if defined(EEPROM_DRIVER)
+#    include "eeprom_driver.h"
+#endif
+
+extern layer_state_t  default_layer_state;
 /** \brief eeconfig enable
  *
  * FIXME: needs doc
@@ -31,6 +38,9 @@ __attribute__((weak)) void eeconfig_init_kb(void) {
 void eeconfig_init_quantum(void) {
 #ifdef STM32_EEPROM_ENABLE
     EEPROM_Erase();
+#endif
+#if defined(EEPROM_DRIVER)
+    eeprom_driver_erase();
 #endif
     eeprom_update_word(EECONFIG_MAGIC, EECONFIG_MAGIC_NUMBER);
     eeprom_update_byte(EECONFIG_DEBUG, 0);
@@ -57,7 +67,9 @@ void eeconfig_init_quantum(void) {
     #pragma message "Faking EE_HANDS for right hand"
     eeprom_update_byte(EECONFIG_HANDEDNESS, 0);
 #endif
-
+#ifdef ORYX_ENABLE
+    eeconfig_init_oryx();
+#endif
     eeconfig_init_kb();
 }
 
@@ -80,6 +92,9 @@ void eeconfig_enable(void) { eeprom_update_word(EECONFIG_MAGIC, EECONFIG_MAGIC_N
 void eeconfig_disable(void) {
 #ifdef STM32_EEPROM_ENABLE
     EEPROM_Erase();
+#endif
+#if defined(EEPROM_DRIVER)
+    eeprom_driver_erase();
 #endif
     eeprom_update_word(EECONFIG_MAGIC, EECONFIG_MAGIC_NUMBER_OFF);
 }

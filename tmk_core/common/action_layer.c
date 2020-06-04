@@ -3,7 +3,9 @@
 #include "action.h"
 #include "util.h"
 #include "action_layer.h"
-
+#ifdef ORYX_ENABLE
+#    include "oryx.h"
+#endif
 #ifdef DEBUG_ACTION
 #    include "debug.h"
 #else
@@ -98,6 +100,9 @@ __attribute__((weak)) layer_state_t layer_state_set_kb(layer_state_t state) { re
  */
 void layer_state_set(layer_state_t state) {
     state = layer_state_set_kb(state);
+#ifdef ORYX_ENABLE
+    layer_state_set_oryx(state);
+#endif
     dprint("layer_state: ");
     layer_debug();
     dprint(" to ");
