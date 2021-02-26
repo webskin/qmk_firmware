@@ -48,7 +48,7 @@ enum custom_keycodes {
   THIN_ARROW,
   FAT_ARROW,
   TILD_ARROW,
-  PIPE_ARROW,sstt
+  PIPE_ARROW
 };
 
 // Tap Dance Declarations
@@ -246,11 +246,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     BP_HASH, KC_KP_1,    KC_KP_2,    KC_KP_3, KC_KP_4,  KC_KP_5,         KC_DELETE,                  _______, _______,          _______,         BP_MINS,     _______, _______,      _______,
     BP_DLR,  BP_B,       BP_ECUT,    BP_P,    BP_O,     TD(TD_EGRV_ESC), KC_BSPACE,                  _______, BP_DCRC,          TD(TD_V_W),      SFT_T(BP_D), BP_L,    BP_J,         _______,
     KC_TAB,  BP_A,       BP_U,       BP_I,    BP_E,     BP_COMM,                                              LT(MISCL2, BP_C), LT(MISCL1,BP_T), BP_S,        BP_R,    BP_N,         BP_M,
-    KC_RSFT, BP_AGRV,    BP_Y,       BP_X,    BP_DOT,   BP_K,            KC_ENTER,                   _______, ALT_T(BP_APOS),   TD(TD_Q_Z),      BP_G,        BP_H,    RCTL_T(BP_F), BP_CCED,
+    KC_RSFT, BP_AGRV,    BP_Y,       BP_X,    BP_DOT,   BP_K,            KC_ENTER,                   _______, ALT_T(BP_APOS),   TD(TD_Q_Z),      BP_G,        BP_H,    RCTL_T(BP_F), RCTL_T(BP_CCED),
     KC_RCTL, KC_KP_6,    KC_KP_7,    KC_KP_8, KC_SPACE,                                                                         KC_SPACE,        KC_RALT,     _______, _______,      _______,
                                                                     KC_NO, KC_UP,                KC_NO,    KC_NO,
                                                                            KC_DOWN,              KC_NO,
-                                                         KC_LSFT, KC_KP_9, KC_KP_0,              TG(GAME1), KC_NO, KC_ENTER  
+                                                           KC_LSFT, BP_L, KC_KP_0,              TG(GAME1), KC_NO, KC_ENTER  
   ),
   /*
   [EMPTY] = LAYOUT_ergodox_pretty(
@@ -514,53 +514,53 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
       // Protection de la ligne de repos si on est sur MISCR1
       case FR_A:
-        if (record->event.pressed && biton32(layer_state) == MISCR1) {
-          SEND_STRING("ea");
-          layer_off(MISCR1);
+        if (record->event.pressed && biton32(layer_state) == MISCR1AZ) {
+          tap_code(FR_E); tap_code(FR_A);
+          layer_off(MISCR1AZ);
           return false;
         } else {
           break;
         }
       case FR_U:
-        if (record->event.pressed && biton32(layer_state) == MISCR1) {
-          SEND_STRING("eu");
-          layer_off(MISCR1);
+        if (record->event.pressed && biton32(layer_state) == MISCR1AZ) {
+          tap_code(FR_E); tap_code(FR_U);
+          layer_off(MISCR1AZ);
           return false;
         } else {
           break;
         }
       case FR_I:
-        if (record->event.pressed && biton32(layer_state) == MISCR1) {
-          SEND_STRING("ei");
-          layer_off(MISCR1);
+        if (record->event.pressed && biton32(layer_state) == MISCR1AZ) {
+          tap_code(FR_E); tap_code(FR_I);
+          layer_off(MISCR1AZ);
           return false;
         } else {
           break;
         }
       case FR_X:
-        if (record->event.pressed && biton32(layer_state) == MISCR1) {
-          SEND_STRING("ex");
-          layer_off(MISCR1);
+        if (record->event.pressed && biton32(layer_state) == MISCR1AZ) {
+          tap_code(FR_E); tap_code(FR_X);
+          layer_off(MISCR1AZ);
           return false;
         } else {
           break;
         }
       case FR_Y:
-        if (record->event.pressed && biton32(layer_state) == MISCR1) {
-          SEND_STRING("ey");
-          layer_off(MISCR1);
+        if (record->event.pressed && biton32(layer_state) == MISCR1AZ) {
+          tap_code(FR_E); tap_code(FR_Y);
+          layer_off(MISCR1AZ);
           return false;
         } else {
           break;
         }
       case SFT_T(FR_P):
-        if (record->event.pressed && biton32(layer_state) == MISCR1) {
-          SEND_STRING("ep");
-          layer_off(MISCR1);
+        if (record->event.pressed && biton32(layer_state) == MISCR1AZ) {
+          tap_code(FR_E); tap_code(FR_P);
+          layer_off(MISCR1AZ);
           return false;
-        } else if (record->event.pressed && biton32(layer_state) == MISCR2) {
-          SEND_STRING(",p");
-          layer_off(MISCR1);
+        } else if (record->event.pressed && biton32(layer_state) == MISCR2AZ) {
+          tap_code(FR_COMM); tap_code(FR_P);
+          layer_off(MISCR1AZ);
           return false;
         } else {
           break;
@@ -569,7 +569,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       // Protection de la ligne de repos si on est sur MISCL1
       case FR_C:
         if (record->event.pressed && biton32(layer_state) == MISCL1AZ) {
-          SEND_STRING("tc");
+          tap_code(FR_T); tap_code(FR_C);
           layer_off(MISCL1AZ);
           return false;
         } else {
@@ -577,7 +577,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
       case FR_L:
         if (record->event.pressed && biton32(layer_state) == MISCL1AZ) {
-          SEND_STRING("tl");
+          tap_code(FR_T); tap_code(FR_L);
           layer_off(MISCL1AZ);
           return false;
         } else {
@@ -585,7 +585,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
       case FR_S:
         if (record->event.pressed && biton32(layer_state) == MISCL1AZ) {
-          SEND_STRING("ts");
+          tap_code(FR_T); tap_code(FR_S);
           layer_off(MISCL1AZ);
           return false;
         } else {
@@ -593,7 +593,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
       case FR_R:
         if (record->event.pressed && biton32(layer_state) == MISCL1AZ) {
-          SEND_STRING("tr");
+          tap_code(FR_T); tap_code(FR_R);
           layer_off(MISCL1AZ);
           return false;
         } else {
@@ -601,7 +601,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
       case FR_N:
         if (record->event.pressed && biton32(layer_state) == MISCL1AZ) {
-          SEND_STRING("tn");
+          tap_code(FR_T); tap_code(FR_N);
           layer_off(MISCL1AZ);
           return false;
         } else {
@@ -609,7 +609,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
       case FR_M:
         if (record->event.pressed && biton32(layer_state) == MISCL1AZ) {
-          SEND_STRING("tm");
+          tap_code(FR_T); tap_code(FR_M);
           layer_off(MISCL1AZ);
           return false;
         } else {
@@ -617,11 +617,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
       case FR_H:
         if (record->event.pressed && biton32(layer_state) == MISCL1AZ) {
-          SEND_STRING("th");
+          tap_code(FR_T); tap_code(FR_H);
           layer_off(MISCL1AZ);
           return false;
         } else if (record->event.pressed && biton32(layer_state) == MISCL2AZ) {
-          SEND_STRING("ch");
+          tap_code(FR_C); tap_code(FR_H);
           layer_off(MISCL2AZ);
           return false;
         } else {
@@ -629,11 +629,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
       case SFT_T(FR_D):
         if (record->event.pressed && biton32(layer_state) == MISCL1AZ) {
-          SEND_STRING("td");
+          tap_code(FR_T); tap_code(FR_D);
           layer_off(MISCL1AZ);
           return false;
         } else if (record->event.pressed && biton32(layer_state) == MISCL2AZ) {
-          SEND_STRING("cd");
+          tap_code(FR_C); tap_code(FR_D);
           layer_off(MISCL2AZ);
           return false;
         } else {
@@ -641,11 +641,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
       case RCTL_T(FR_F):
         if (record->event.pressed && biton32(layer_state) == MISCL1AZ) {
-          SEND_STRING("df");
+          tap_code(FR_D); tap_code(FR_F);
           layer_off(MISCL1AZ);  
           return false;
         } else if (record->event.pressed && biton32(layer_state) == MISCL2AZ) {
-          SEND_STRING("cf");
+          tap_code(FR_C); tap_code(FR_F);
           layer_off(MISCL2AZ);  
           return false;
         } else {
@@ -654,12 +654,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       case THIN_ARROW:
         if (record->event.pressed && biton32(layer_state) == MISCL1AZ) {
           clear_mods();
-          SEND_STRING("->");
+          tap_code(FR_MINS); tap_code16(FR_GRTR);
           set_mods(temp_mods);
           return false;
         } else if (record->event.pressed && biton32(layer_state) == MISCL2AZ) {
           clear_mods();
-          SEND_STRING("<-");
+          tap_code(FR_LESS); tap_code(FR_MINS);
           set_mods(temp_mods);
           return false;
         } else {
@@ -668,7 +668,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       case FAT_ARROW:
         if (record->event.pressed && biton32(layer_state) == MISCL1AZ) {
           clear_mods();
-          SEND_STRING("=>");
+          tap_code(FR_EQL); tap_code16(FR_GRTR);
           set_mods(temp_mods);
           return false;
         } else {
@@ -677,7 +677,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       case TILD_ARROW:
         if (record->event.pressed && biton32(layer_state) == MISCL1AZ) {
           clear_mods();
-          SEND_STRING("~>");
+          tap_code16(FR_TILD); tap_code16(FR_GRTR);
           set_mods(temp_mods);
           return false;
         } else {
@@ -686,7 +686,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       case PIPE_ARROW:
         if (record->event.pressed && biton32(layer_state) == MISCL1AZ) {
           clear_mods();
-          SEND_STRING("|>");
+          tap_code16(FR_PIPE); tap_code16(FR_GRTR);
           set_mods(temp_mods);
           return false;
         } else {
