@@ -233,14 +233,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                  _______, _______, _______,        _______, _______, _______
   ),
   [FXXNPOH] = LAYOUT_ergodox_pretty(
-    TG(FXXNPOH), _______, _______, _______, _______, _______, _______,                          _______, _______, _______, _______, _______, _______, _______,
-    _______, KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F11,                           _______, _______, _______, _______, _______, _______, _______,
-    _______, KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,                                             _______, _______, _______, _______, _______, _______,
-    _______, _______, _______, _______, _______, _______, KC_F12,                           _______, _______, _______, _______, _______, _______, _______,
-    _______, _______, _______, _______, _______,                                                              _______, _______, _______, _______, _______,
-                                                          _______, _______,        _______, _______,
-                                                                   _______,        _______,
-                                                 _______, _______, _______,        _______, _______, _______
+    TG(FXXNPOH), BP_A,        BP_B,    BP_C,         BP_D,    BP_E,        BP_F,                             BP_G,    BP_H,        BP_I,    BP_J,           BP_K   , BP_L,         BP_M,
+    _______,     KC_F1,       KC_F2,   SFT_T(KC_F3), KC_F4,   KC_F5,       KC_F11,                           KC_UP,   KC_KP_1,     KC_KP_2, SFT_T(KC_KP_3), KC_KP_4, KC_KP_5,      BP_Y,
+    _______,     KC_F6,       KC_F7,   KC_F8,        KC_F9,   KC_F10,                                                 KC_KP_6,     KC_KP_7, KC_KP_8,        KC_KP_9, KC_KP_0,      BP_Z,
+    _______,     CTL_T(BP_N), BP_O,    BP_P,         BP_Q,    ALT_T(BP_R), KC_F12,                           KC_DOWN, ALT_T(BP_S), BP_T,    BP_U,           BP_V,    RCTL_T(BP_W), BP_X,
+    _______,     BP_ASTR,     BP_PLUS, BP_MINS,      BP_EQL,                                                                       KC_F13,  KC_F14,         KC_F15,  KC_F16,       KC_F17,
+                                                                         BP_LBRC, BP_RBRC,         KC_LEFT, KC_RIGHT,
+                                                                                  BP_DOT ,         BP_SLSH,
+                                                                KC_LSFT, BP_LPRN, BP_RPRN,         BP_BSLS, BP_HASH, KC_ENTER
   ),
   [GAME1] = LAYOUT_ergodox_pretty(
     BP_HASH, KC_KP_1,    KC_KP_2,    KC_KP_3, KC_KP_4,  KC_KP_5,         KC_DELETE,                  _______, _______,          _______,         BP_MINS,     _______, _______,      _______,
@@ -248,10 +248,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TAB,  BP_A,       BP_U,       BP_I,    BP_E,     BP_COMM,                                              LT(MISCL2, BP_C), LT(MISCL1,BP_T), BP_S,        BP_R,    BP_N,         BP_M,
     KC_RSFT, BP_AGRV,    BP_Y,       BP_X,    BP_DOT,   BP_K,            KC_ENTER,                   _______, ALT_T(BP_APOS),   TD(TD_Q_Z),      BP_G,        BP_H,    RCTL_T(BP_F), RCTL_T(BP_CCED),
     KC_RCTL, KC_KP_6,    KC_KP_7,    KC_KP_8, KC_SPACE,                                                                         KC_SPACE,        KC_RALT,     _______, _______,      _______,
-                                                                    KC_NO, KC_UP,                KC_NO,    KC_NO,
-                                                                           KC_DOWN,              KC_NO,
+                                                                    KC_NO, KC_UP,               KC_NO,    KC_NO,
+                                                                          KC_DOWN,              KC_NO,
                                                            KC_LSFT, BP_L, KC_KP_0,              TG(GAME1), KC_NO, KC_ENTER  
-  ),
+  )
   /*
   [EMPTY] = LAYOUT_ergodox_pretty(
     _______, _______, _______, _______, _______, _______, _______,                          _______, _______, _______, _______, _______, _______, _______,
