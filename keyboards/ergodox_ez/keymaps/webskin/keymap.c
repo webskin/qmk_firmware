@@ -38,7 +38,7 @@ enum {
   MISCR2AZ,
   NUMPAD,
   MOUSE,
-  // F1 -> F12 One Hand and NumPad One Hand
+  // F1 -> F12 One Hand and NumPad One Hand.
   FXXNPOH,
   GAME1,
 };
