@@ -752,6 +752,9 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     ergodox_right_led_1_off();
     ergodox_right_led_2_off();
     ergodox_right_led_3_off();
+    ergodox_right_led_1_set(LED_BRIGHTNESS_HI);
+    ergodox_right_led_2_set(LED_BRIGHTNESS_HI);
+    ergodox_right_led_3_set(LED_BRIGHTNESS_HI);
     switch (layer) {
       case MISCL1:
       case MISCL1AZ:
