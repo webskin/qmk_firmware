@@ -38,8 +38,6 @@ enum {
   MISCR2AZ,
   NUMPAD,
   MOUSE,
-  // F1 -> F12 One Hand and NumPad One Hand.
-  FXXNPOH,
   GAME1,
 };
 
@@ -114,7 +112,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [BEPO] = LAYOUT_ergodox_pretty(
-    TG(FXXNPOH), BP_NDSH,   BP_MDSH, BP_UNDS,     _______,             _______,            KC_DELETE,                              _______, _______,          _______,         BP_MINS,     _______, _______,      DF(AZERT),
+    _______,     BP_NDSH,   BP_MDSH, BP_UNDS,     _______,             _______,            KC_DELETE,                              _______, _______,          _______,         BP_MINS,     _______, _______,      DF(AZERT),
     BP_DLR,    BP_B,           BP_EACU,    SFT_T(BP_P), BP_O,                TD(TD_EGRV_ESC),    KC_BSPC,                              _______, BP_DCIR,          TD(TD_V_W),      SFT_T(BP_D), BP_L,    BP_J,         _______,
     KC_TAB,    BP_A,           BP_U,       BP_I,        LT(MISCR1,BP_E),     LT(MISCR2,BP_COMM),                                                  LT(MISCL2, BP_C), LT(MISCL1,BP_T), BP_S,        BP_R,    BP_N,         BP_M,
     KC_RSFT,   CTL_T(BP_AGRV), BP_Y,       BP_X,        BP_DOT,              ALT_T(BP_K),        KC_ENTER,                               _______, ALT_T(BP_QUOT),   TD(TD_Q_Z),      BP_G,        BP_H,    RCTL_T(BP_F), BP_CCED,
@@ -232,16 +230,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                           _______, _______,        _______, _______,
                                                                    _______,        _______,
                                                  _______, _______, _______,        _______, _______, _______
-  ),
-  [FXXNPOH] = LAYOUT_ergodox_pretty(
-    TG(FXXNPOH), BP_A,        BP_B,    BP_C,         BP_D,    BP_E,        BP_F,                             BP_G,    BP_H,        BP_I,    BP_J,           BP_K   , BP_L,         BP_M,
-    _______,     KC_F1,       KC_F2,   SFT_T(KC_F3), KC_F4,   KC_F5,       KC_F11,                           KC_UP,   KC_KP_1,     KC_KP_2, SFT_T(KC_KP_3), KC_KP_4, KC_KP_5,      BP_Y,
-    _______,     KC_F6,       KC_F7,   KC_F8,        KC_F9,   KC_F10,                                                 KC_KP_6,     KC_KP_7, KC_KP_8,        KC_KP_9, KC_KP_0,      BP_Z,
-    _______,     CTL_T(BP_N), BP_O,    BP_P,         BP_Q,    ALT_T(BP_R), KC_F12,                           KC_DOWN, ALT_T(BP_S), BP_T,    BP_U,           BP_V,    RCTL_T(BP_W), BP_X,
-    _______,     BP_ASTR,     BP_PLUS, BP_MINS,      BP_EQL,                                                                       KC_F13,  KC_F14,         KC_F15,  KC_F16,       KC_F17,
-                                                                         BP_LBRC, BP_RBRC,         KC_LEFT, KC_RIGHT,
-                                                                                  BP_DOT ,         BP_SLSH,
-                                                                KC_LSFT, BP_LPRN, BP_RPRN,         BP_BSLS, BP_HASH, KC_ENTER
   ),
   [GAME1] = LAYOUT_ergodox_pretty(
     BP_HASH, KC_KP_1,    KC_KP_2,    KC_KP_3, KC_KP_4,  KC_KP_5,         KC_DELETE,                  _______, _______,          _______,         BP_MINS,     _______, _______,      _______,
@@ -788,10 +776,6 @@ layer_state_t layer_state_set_user(layer_state_t state) {
         ergodox_right_led_3_on();
         break;
 #ifndef RGBLIGHT_ENABLE
-      case FXXNPOH:
-        ergodox_right_led_2_set(LED_BRIGHTNESS_LO);
-        ergodox_right_led_2_on();
-        break;
       case GAME1:
         ergodox_right_led_1_set(LED_BRIGHTNESS_LO);
         ergodox_right_led_1_on();
@@ -805,13 +789,6 @@ layer_state_t layer_state_set_user(layer_state_t state) {
       return state;
     } else {
       switch (layer) {
-      case FXXNPOH:
-        if(!keyboard_config.disable_layer_led) {
-          rgblight_enable_noeeprom();
-          rgblight_mode_noeeprom(1);
-          rgblight_sethsv_noeeprom(0,255,127);
-        }
-        break;
       case GAME1:
         if(!keyboard_config.disable_layer_led) {
           rgblight_enable_noeeprom();
