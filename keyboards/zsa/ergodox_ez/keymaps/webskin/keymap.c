@@ -46,6 +46,7 @@ enum {
 enum custom_keycodes {
   RGB_SLD = ZSA_SAFE_RANGE,
   THIN_ARROW,
+  REVERSE_ARROW,
   FAT_ARROW,
   TILD_ARROW,
   PIPE_ARROW
@@ -58,16 +59,16 @@ enum {
   TD_LESS_LGIL,
   TD_GRTR_RGIL,
   TD_V_W,
-  TD_Q_Z,      
+  TD_Q_Z,
   TD_EGRV_ESC,
   // Version Azerty
   TD_COPY_CUT_AZ,
   TD_PASTE_SINSERT_AZ,
   TD_V_W_AZ,
-  TD_Q_Z_AZ,       
+  TD_Q_Z_AZ,
   TD_EGRV_ESC_AZ,
 };
-   
+
 tap_dance_action_t tap_dance_actions[] = {
   [TD_COPY_CUT]       = ACTION_TAP_DANCE_DOUBLE(KC_BP_COPY,  KC_BP_CUT),
   [TD_PASTE_SINSERT]  = ACTION_TAP_DANCE_DOUBLE(KC_BP_PASTE, S(KC_INSERT)),
@@ -101,7 +102,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     case ALT_T(BP_K):
     case ALT_T(BP_QUOT):
     case ALT_T(KC_NO):
-      return 200;  
+      return 200;
     case LT(MISCR1,BP_E):
     case LT(MISCL1,BP_T):
     case LT(MISCL2,BP_C):
@@ -154,17 +155,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
   [MISCL2] = LAYOUT_ergodox_pretty(
     _______, _______, _______,    _______,    _______,          _______,          _______,                          _______, _______, _______, _______, _______, _______, _______,
-    _______, _______, _______,    THIN_ARROW, BP_LBRC,          BP_RBRC,          _______,                          _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______,    REVERSE_ARROW, BP_LBRC,          BP_RBRC,          _______,                          _______, _______, _______, _______, _______, _______, _______,
     _______, _______, _______,    _______,    BP_LPRN,          BP_RPRN,                                            _______, _______, _______, _______, _______, _______,
     _______, _______, RALT(BP_Y), RALT(BP_X), TD(TD_LESS_LGIL), TD(TD_GRTR_RGIL), _______,                          _______, _______, _______, _______, _______, _______, _______,
     _______, _______, _______,    _______,    _______,                                                              _______, _______, _______, _______, _______,
                                                                                            _______, _______,        _______, _______,
                                                                                                     _______,        _______,
                                                                                   _______, _______, _______,        _______, _______, _______
-  ),  
+  ),
   [MISCL2AZ] = LAYOUT_ergodox_pretty(
     _______, _______, _______,      _______,      _______,             _______, _______,                          _______, _______, _______, _______, _______, _______, _______,
-    _______, _______, _______,      THIN_ARROW,   FR_LBRC,             FR_RBRC, _______,                          _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______,      REVERSE_ARROW,   FR_LBRC,             FR_RBRC, _______,                          _______, _______, _______, _______, _______, _______, _______,
     _______, _______, _______,      _______,      FR_LPRN,             FR_RPRN,                                            _______, _______, _______, _______, _______, _______,
     _______, _______, RALT(FR_GRV), RALT(FR_EQL), FR_LABK,             FR_RABK, _______,                          _______, _______, _______, _______, _______, _______, _______,
     _______, _______, _______,    _______,    _______,                                                              _______, _______, _______, _______, _______,
@@ -214,14 +215,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
   [NUMPAD] = LAYOUT_ergodox_pretty(
     _______, _______,      _______, _______,      _______,   _______,      _______,                          _______, _______,      KC_KP_PLUS, KC_KP_MINUS,  KC_KP_SLASH, KC_KP_ASTERISK,  _______,
-    _______, KC_F1,        KC_F2,   SFT_T(KC_F3), KC_F4,     KC_F5,        _______,                          _______, KC_F6,        KC_F7,      SFT_T(KC_F8), KC_F9,       KC_F10,          KC_F11, 
-    _______, KC_KP_1,      KC_KP_2, KC_KP_3,      KC_KP_4,   KC_KP_5,                                                 KC_KP_6,      KC_KP_7,    KC_KP_8,      KC_KP_9,     KC_KP_0,         KC_F12, 
+    _______, KC_F1,        KC_F2,   SFT_T(KC_F3), KC_F4,     KC_F5,        _______,                          _______, KC_F6,        KC_F7,      SFT_T(KC_F8), KC_F9,       KC_F10,          KC_F11,
+    _______, KC_KP_1,      KC_KP_2, KC_KP_3,      KC_KP_4,   KC_KP_5,                                                 KC_KP_6,      KC_KP_7,    KC_KP_8,      KC_KP_9,     KC_KP_0,         KC_F12,
     _______, CTL_T(KC_NO), _______, _______,      KC_KP_DOT, ALT_T(KC_NO), _______,                          _______, ALT_T(KC_NO), _______,    _______,     _______,      RCTL_T(KC_NO),   _______,
     _______, _______,      _______, _______,      _______,                                                                          _______,    _______,     _______,      _______,         _______,
                                                             _______, _______,        _______, _______,
                                                                      _______,        _______,
                                                    _______, _______, _______,        _______, _______, _______
-  ), 
+  ),
   [MOUSE] = LAYOUT_ergodox_pretty(
     _______, _______, _______, _______, _______, _______, _______,                          _______,       _______,    _______, KC_MS_BTN3, _______,     _______, _______,
     _______, _______, _______, _______, _______, _______, _______,                          _______,       _______, KC_MS_BTN1, KC_MS_UP,   KC_MS_BTN2,  _______, _______,
@@ -250,7 +251,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_RCTL, KC_KP_6,    KC_KP_7,    KC_KP_8, KC_SPACE,                                                                         KC_SPACE,        KC_RALT,     _______, _______,      _______,
                                                                     KC_NO, KC_UP,               KC_NO,    KC_NO,
                                                                           KC_DOWN,              KC_NO,
-                                                           KC_LSFT, BP_L, KC_KP_0,              TG(GAME1), KC_NO, KC_ENTER  
+                                                           KC_LSFT, BP_L, KC_KP_0,              TG(GAME1), KC_NO, KC_ENTER
   )
   /*
   [EMPTY] = LAYOUT_ergodox_pretty(
@@ -368,7 +369,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return false;
         } else if (record->event.pressed && get_highest_layer(layer_state) == MISCR2) {
           SEND_STRING(",p");
-          layer_off(MISCR1);
+          layer_off(MISCR2);
           return false;
         } else {
           break;
@@ -449,57 +450,56 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
       case RCTL_T(BP_F):
         if (record->event.pressed && get_highest_layer(layer_state) == MISCL1) {
-          SEND_STRING("df");
-          layer_off(MISCL1);  
+          SEND_STRING("tf");
+          layer_off(MISCL1);
           return false;
         } else if (record->event.pressed && get_highest_layer(layer_state) == MISCL2) {
           SEND_STRING("cf");
-          layer_off(MISCL2);  
+          layer_off(MISCL2);
           return false;
         } else {
           break;
         }
       case THIN_ARROW:
-        if (record->event.pressed && get_highest_layer(layer_state) == MISCL1) {
+        if (record->event.pressed) {
           clear_mods();
           SEND_STRING("->");
           set_mods(temp_mods);
           return false;
-        } else if (record->event.pressed && get_highest_layer(layer_state) == MISCL2) {
+        }
+        break;
+      case REVERSE_ARROW:
+        if (record->event.pressed) {
           clear_mods();
           SEND_STRING("<-");
           set_mods(temp_mods);
           return false;
-        } else {
-          break;
         }
+        break;
       case FAT_ARROW:
-        if (record->event.pressed && get_highest_layer(layer_state) == MISCL1) {
+        if (record->event.pressed) {
           clear_mods();
           SEND_STRING("=>");
           set_mods(temp_mods);
           return false;
-        } else {
-          break;
         }
+        break;
       case TILD_ARROW:
-        if (record->event.pressed && get_highest_layer(layer_state) == MISCL1) {
+        if (record->event.pressed) {
           clear_mods();
           SEND_STRING("~>");
           set_mods(temp_mods);
           return false;
-        } else {
-          break;
         }
+        break;
       case PIPE_ARROW:
-        if (record->event.pressed && get_highest_layer(layer_state) == MISCL1) {
+        if (record->event.pressed) {
           clear_mods();
           SEND_STRING("|>");
           set_mods(temp_mods);
           return false;
-        } else {
-          break;
         }
+        break;
       case BP_UNDS:
         if (record->event.pressed) {
           clear_mods();
@@ -559,7 +559,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return false;
         } else if (record->event.pressed && get_highest_layer(layer_state) == MISCR2AZ) {
           tap_code(FR_COMM); tap_code(FR_P);
-          layer_off(MISCR1AZ);
+          layer_off(MISCR2AZ);
           return false;
         } else {
           break;
@@ -641,56 +641,55 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       case RCTL_T(FR_F):
         if (record->event.pressed && get_highest_layer(layer_state) == MISCL1AZ) {
           tap_code(FR_D); tap_code(FR_F);
-          layer_off(MISCL1AZ);  
+          layer_off(MISCL1AZ);
           return false;
         } else if (record->event.pressed && get_highest_layer(layer_state) == MISCL2AZ) {
           tap_code(FR_C); tap_code(FR_F);
-          layer_off(MISCL2AZ);  
+          layer_off(MISCL2AZ);
           return false;
         } else {
           break;
         }
       case THIN_ARROW:
-        if (record->event.pressed && get_highest_layer(layer_state) == MISCL1AZ) {
+        if (record->event.pressed) {
           clear_mods();
           tap_code(FR_MINS); tap_code16(FR_RABK);
           set_mods(temp_mods);
           return false;
-        } else if (record->event.pressed && get_highest_layer(layer_state) == MISCL2AZ) {
+        }
+        break;
+      case REVERSE_ARROW:
+        if (record->event.pressed) {
           clear_mods();
           tap_code(FR_LABK); tap_code(FR_MINS);
           set_mods(temp_mods);
           return false;
-        } else {
-          break;
         }
+        break;
       case FAT_ARROW:
-        if (record->event.pressed && get_highest_layer(layer_state) == MISCL1AZ) {
+        if (record->event.pressed) {
           clear_mods();
           tap_code(FR_EQL); tap_code16(FR_RABK);
           set_mods(temp_mods);
           return false;
-        } else {
-          break;
         }
+        break;
       case TILD_ARROW:
-        if (record->event.pressed && get_highest_layer(layer_state) == MISCL1AZ) {
+        if (record->event.pressed) {
           clear_mods();
           tap_code16(FR_TILD); tap_code16(FR_RABK);
           set_mods(temp_mods);
           return false;
-        } else {
-          break;
         }
+        break;
       case PIPE_ARROW:
-        if (record->event.pressed && get_highest_layer(layer_state) == MISCL1AZ) {
+        if (record->event.pressed) {
           clear_mods();
           tap_code16(FR_PIPE); tap_code16(FR_RABK);
           set_mods(temp_mods);
           return false;
-        } else {
-          break;
         }
+        break;
     }
   }
 
@@ -703,7 +702,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         return false;
 #endif
     }
-  
+
   return true;
 }
 
@@ -748,7 +747,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     uint8_t default_layer = get_highest_layer(default_layer_state);
 
     if (default_layer != AZERT) {
-      ergodox_board_led_off();  
+      ergodox_board_led_off();
     }
     ergodox_right_led_1_off();
     ergodox_right_led_2_off();
@@ -770,7 +769,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
       case MISCR2AZ:
         ergodox_right_led_1_on();
         ergodox_right_led_2_on();
-        break;  
+        break;
       case NUMPAD:
         ergodox_right_led_1_on();
         ergodox_right_led_3_on();
@@ -833,7 +832,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 
 void keyboard_post_init_user(void) {
   layer_state_set_user(layer_state);
-  
+
   // Customise these values to desired behaviour
   //debug_enable=true;
   //debug_matrix=true;
