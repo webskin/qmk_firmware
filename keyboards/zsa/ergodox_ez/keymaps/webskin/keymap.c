@@ -112,8 +112,8 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [BEPO] = LAYOUT_ergodox_pretty(
-    _______,     BP_NDSH,   BP_MDSH, BP_UNDS,     _______,             _______,            KC_DELETE,                              _______, _______,          _______,         BP_MINS,     _______, _______,      DF(AZERT),
-    BP_DLR,    BP_B,           BP_EACU,    SFT_T(BP_P), BP_O,                TD(TD_EGRV_ESC),    KC_BSPC,                              _______, BP_DCIR,          TD(TD_V_W),      SFT_T(BP_D), BP_L,    BP_J,         _______,
+    _______,   BP_NDSH,        BP_MDSH,    BP_UNDS,     _______,             _______,            KC_DELETE,                              _______, _______,          _______,         BP_MINS,     _______, _______,      DF(AZERT),
+    BP_DLR,    BP_B,           BP_EACU,    SFT_T(BP_P), BP_O,                TD(TD_EGRV_ESC),    KC_BSPC,                                _______, BP_DCIR,          TD(TD_V_W),      SFT_T(BP_D), BP_L,    BP_J,         _______,
     KC_TAB,    BP_A,           BP_U,       BP_I,        LT(MISCR1,BP_E),     LT(MISCR2,BP_COMM),                                                  LT(MISCL2, BP_C), LT(MISCL1,BP_T), BP_S,        BP_R,    BP_N,         BP_M,
     KC_RSFT,   CTL_T(BP_AGRV), BP_Y,       BP_X,        BP_DOT,              ALT_T(BP_K),        KC_ENTER,                               _______, ALT_T(BP_QUOT),   TD(TD_Q_Z),      BP_G,        BP_H,    RCTL_T(BP_F), BP_CCED,
     KC_RCTL,   KC_LGUI,        _______,    _______,     LT(NUMPAD,KC_SPACE),                                                                                        KC_SPACE,        KC_RALT,     _______, _______,      _______,
@@ -123,7 +123,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
   [AZERT] = LAYOUT_ergodox_pretty(
     _______,   _______,        _______,    FR_UNDS,     _______,             _______,            KC_DELETE,                              _______, _______,            _______,            FR_MINS,     _______, _______,      DF(BEPO),
-    FR_DLR,    FR_B,           FR_EACU,    SFT_T(FR_P), FR_O,                TD(TD_EGRV_ESC_AZ),  KC_BSPC,                             _______, FR_CIRC,            TD(TD_V_W_AZ),      SFT_T(FR_D), FR_L,    FR_J,         _______,
+    FR_DLR,    FR_B,           FR_EACU,    SFT_T(FR_P), FR_O,                TD(TD_EGRV_ESC_AZ),  KC_BSPC,                               _______, FR_CIRC,            TD(TD_V_W_AZ),      SFT_T(FR_D), FR_L,    FR_J,         _______,
     KC_TAB,    FR_A,           FR_U,       FR_I,        LT(MISCR1AZ,FR_E),   LT(MISCR2,FR_COMM),                                                  LT(MISCL2AZ, FR_C), LT(MISCL1AZ, FR_T), FR_S,        FR_R,    FR_N,         FR_M,
     KC_RSFT,   CTL_T(FR_AGRV), FR_Y,       FR_X,        FR_DOT,              ALT_T(FR_K),        KC_ENTER,                               _______, ALT_T(FR_QUOT),     TD(TD_Q_Z_AZ),      FR_G,        FR_H,    RCTL_T(FR_F), FR_CCED,
     KC_RCTL,   KC_LGUI,        _______,    _______,     LT(NUMPAD,KC_SPACE),                                                                                          KC_SPACE,           KC_RALT,     _______, _______,      _______,
@@ -132,10 +132,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                 KC_LSFT, _______, _______,      _______, _______, KC_ENTER
   ),
   [MISCL1] = LAYOUT_ergodox_pretty(
-    _______,             PIPE_ARROW,          TILD_ARROW, FAT_ARROW,  BP_DEG,  _______, _______,                          _______, _______, _______, _______, _______, _______, _______,
+    _______,             PIPE_ARROW,          TILD_ARROW, FAT_ARROW,  BP_DEG,  _______,  _______,                          _______, _______, _______, _______, _______, _______, _______,
     _______,             BP_DLR,              BP_HASH,    THIN_ARROW, BP_PERC,  BP_GRV,  _______,                          _______, _______, _______, _______, _______, _______, _______,
     S(KC_TAB),           BP_SLSH,             BP_ASTR,    BP_PLUS,    BP_EQL,   BP_SCLN,                                            _______, _______, _______, _______, _______, _______,
-    KC_MEDIA_PLAY_PAUSE, BP_BSLS,             BP_AT,      BP_DQUO,    BP_COLN, BP_TILD, _______,                          _______, _______, _______, _______, _______, _______, _______,
+    KC_MEDIA_PLAY_PAUSE, BP_BSLS,             BP_AT,      BP_DQUO,    BP_COLN, BP_TILD,  _______,                          _______, _______, _______, _______, _______, _______, _______,
     KC_MEDIA_PREV_TRACK, KC_MEDIA_NEXT_TRACK, _______,    _______,    _______,                                                              _______, _______, _______, _______, _______,
                                                                                            _______, _______,        _______, _______,
                                                                                                     _______,        _______,
@@ -152,20 +152,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                   _______, _______, _______,        _______, _______, _______
   ),
   [MISCL2] = LAYOUT_ergodox_pretty(
-    _______, _______, _______,    _______,    _______,          _______,          _______,                          _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______,    _______,       _______,          _______,          _______,                          _______, _______, _______, _______, _______, _______, _______,
     _______, _______, _______,    REVERSE_ARROW, BP_LBRC,          BP_RBRC,          _______,                          _______, _______, _______, _______, _______, _______, _______,
-    _______, _______, _______,    _______,    BP_LPRN,          BP_RPRN,                                            _______, _______, _______, _______, _______, _______,
-    _______, _______, RALT(BP_Y), RALT(BP_X), TD(TD_LESS_LGIL), TD(TD_GRTR_RGIL), _______,                          _______, _______, _______, _______, _______, _______, _______,
-    _______, _______, _______,    _______,    _______,                                                              _______, _______, _______, _______, _______,
+    _______, _______, _______,    _______,       BP_LPRN,          BP_RPRN,                                            _______, _______, _______, _______, _______, _______,
+    _______, _______, RALT(BP_Y), RALT(BP_X),    TD(TD_LESS_LGIL), TD(TD_GRTR_RGIL), _______,                          _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______,    _______,       _______,                                                              _______, _______, _______, _______, _______,
                                                                                            _______, _______,        _______, _______,
                                                                                                     _______,        _______,
                                                                                   _______, _______, _______,        _______, _______, _______
   ),
   [MISCL2AZ] = LAYOUT_ergodox_pretty(
-    _______, _______, _______,      _______,      _______,             _______, _______,                          _______, _______, _______, _______, _______, _______, _______,
-    _______, _______, _______,      REVERSE_ARROW,   FR_LBRC,             FR_RBRC, _______,                          _______, _______, _______, _______, _______, _______, _______,
-    _______, _______, _______,      _______,      FR_LPRN,             FR_RPRN,                                            _______, _______, _______, _______, _______, _______,
-    _______, _______, RALT(FR_GRV), RALT(FR_EQL), FR_LABK,             FR_RABK, _______,                          _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______,      _______,       _______,             _______, _______,                          _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______,      REVERSE_ARROW, FR_LBRC,             FR_RBRC, _______,                          _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______,      _______,       FR_LPRN,             FR_RPRN,                                            _______, _______, _______, _______, _______, _______,
+    _______, _______, RALT(FR_GRV), RALT(FR_EQL),  FR_LABK,             FR_RABK, _______,                          _______, _______, _______, _______, _______, _______, _______,
     _______, _______, _______,    _______,    _______,                                                              _______, _______, _______, _______, _______,
                                                                                            _______, _______,        _______, _______,
                                                                                                     _______,        _______,
@@ -233,7 +233,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
   [GAME1] = LAYOUT_ergodox_pretty(
     BP_HASH, KC_KP_1,    KC_KP_2,    KC_KP_3, KC_KP_4,  KC_KP_5,         KC_DELETE,                  _______, _______,          _______,         BP_MINS,     _______, _______,      _______,
-    BP_DLR,  BP_B,       BP_EACU,    BP_P,    BP_O,     TD(TD_EGRV_ESC), KC_BSPC,                  _______, BP_DCIR,          TD(TD_V_W),      SFT_T(BP_D), BP_L,    BP_J,         _______,
+    BP_DLR,  BP_B,       BP_EACU,    BP_P,    BP_O,     TD(TD_EGRV_ESC), KC_BSPC,                    _______, BP_DCIR,          TD(TD_V_W),      SFT_T(BP_D), BP_L,    BP_J,         _______,
     KC_TAB,  BP_A,       BP_U,       BP_I,    BP_E,     BP_COMM,                                              LT(MISCL2, BP_C), LT(MISCL1,BP_T), BP_S,        BP_R,    BP_N,         BP_M,
     KC_RSFT, BP_AGRV,    BP_Y,       BP_X,    BP_DOT,   BP_K,            KC_ENTER,                   _______, ALT_T(BP_QUOT),   TD(TD_Q_Z),      BP_G,        BP_H,    RCTL_T(BP_F), RCTL_T(BP_CCED),
     KC_RCTL, KC_KP_6,    KC_KP_7,    KC_KP_8, KC_SPACE,                                                                         KC_SPACE,        KC_RALT,     _______, _______,      _______,
