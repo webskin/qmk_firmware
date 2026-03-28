@@ -752,32 +752,38 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     ergodox_right_led_1_off();
     ergodox_right_led_2_off();
     ergodox_right_led_3_off();
-    ergodox_right_led_1_set(LED_BRIGHTNESS_HI);
-    ergodox_right_led_2_set(LED_BRIGHTNESS_HI);
-    ergodox_right_led_3_set(LED_BRIGHTNESS_HI);
     switch (layer) {
       case MISCL1:
       case MISCL1AZ:
+        ergodox_right_led_1_set(LED_BRIGHTNESS_HI);
         ergodox_right_led_1_on();
         break;
       case MISCL2:
       case MISCL2AZ:
+        ergodox_right_led_2_set(LED_BRIGHTNESS_HI);
         ergodox_right_led_2_on();
         break;
       case MISCR1:
       case MISCR1AZ:
+        ergodox_right_led_3_set(LED_BRIGHTNESS_HI);
         ergodox_right_led_3_on();
         break;
       case MISCR2:
       case MISCR2AZ:
+        ergodox_right_led_1_set(LED_BRIGHTNESS_HI);
+        ergodox_right_led_2_set(LED_BRIGHTNESS_HI);
         ergodox_right_led_1_on();
         ergodox_right_led_2_on();
         break;
       case NUMPAD:
+        ergodox_right_led_1_set(LED_BRIGHTNESS_HI);
+        ergodox_right_led_3_set(LED_BRIGHTNESS_HI);
         ergodox_right_led_1_on();
         ergodox_right_led_3_on();
         break;
       case MOUSE:
+        ergodox_right_led_2_set(LED_BRIGHTNESS_HI);
+        ergodox_right_led_3_set(LED_BRIGHTNESS_HI);
         ergodox_right_led_2_on();
         ergodox_right_led_3_on();
         break;
